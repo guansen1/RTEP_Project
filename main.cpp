@@ -10,7 +10,7 @@
 std::atomic<bool> alarm_triggered(false); // 是否触发报警
 std::atomic<bool> running(true);          // 程序是否运行
 std::mutex mtx;
-std::condition_variable cv;
+std::condition_variable cv; 
 
 // 🔹 传感器线程（模拟 PIR 传感器 & 温湿度传感器）
 void sensorThread() {
