@@ -1,0 +1,122 @@
+// dht.cpp
+#include "dht.h"
+#include <chrono>
+#include <iostream>
+
+DHT11::DHT11(GPIO&gpio) : gpio(gpio), callback(nullptr) {
+
+}
+
+DHT11::~DHT11() {
+    stop();
+}
+
+void DHT11::start() {
+    running = true;
+    workerThread = std::thread(&DHT11::worker, this);
+}
+
+void DHT11::stop() {
+    running = false;
+    if (workerThread.joinable()) {
+        workerThread.join();
+    }
+}
+
+void DHT11::registerCallback(std::function<void(const DHTReading&)> callback) {
+    this->callback = callback;
+}
+
+void DHT11::worker() {
+    while (running) {
+        DHTReading reading;
+        if (readData(reading)) {
+            if (callback) {
+                callback(reading);  // 调用回调函数
+            }
+        }
+        std::this_thread::sleep_for(std::chrono::seconds(2));  // 阻塞式延时 2 秒
+    }
+}
+
+bool DHT11::readData(DHTReading& result) {
+    gpio.configGPIO(DHT_IO, OUTPUT);
+    gpio.writeGPIO(DHT_IO, 0);  // 拉低引脚
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));  // 保持低电平至少 18ms
+    std::cout << "DHT pull down finished " << std::endl;
+    gpio.writeGPIO(DHT_IO, 1);  // 拉高引脚
+    std::this_thread::sleep_for(std::chrono::microseconds(30));  // 保持高电平 20~40us
+    std::cout << "DHT pull up finished " << std::endl;
+    // 检查 DHT11 响应
+    if (!checkResponse()) {
+        return false;
+    }
+
+    // 读取 40 位数据
+    uint8_t data[5] = {0};
+    for (int i = 0; i < 5; i++) {
+        data[i] = readByte();
+    }
+
+    // 校验数据
+    if ((data[0] + data[1] + data[2] + data[3]) == data[4]) {
+        result.humidity = data[0];
+        result.temp_celsius = data[2];
+        return true;
+    }
+
+    return false;
+}
+
+bool DHT11::checkResponse() {
+    gpio.configGPIO(DHT_IO, INPUT);  // 设置引脚为输入模式
+
+    // 等待 DHT11 拉低引脚 40~80us
+    auto start = std::chrono::steady_clock::now();
+    while (gpio.readGPIO(DHT_IO) == 1) {
+        if (std::chrono::steady_clock::now() - start > std::chrono::microseconds(100)) {
+            return false;  // 超时
+        }
+    }
+
+    // 等待 DHT11 拉高引脚 40~80us
+    start = std::chrono::steady_clock::now();
+    while (gpio.readGPIO(DHT_IO) == 0) {
+        if (std::chrono::steady_clock::now() - start > std::chrono::microseconds(100)) {
+            return false;  // 超时
+        }
+    }
+
+    return true;
+}
+
+uint8_t DHT11::readByte() {
+    uint8_t byte = 0;
+    for (int i = 0; i < 8; i++) {
+        byte <<= 1;
+        byte |= readBit();
+    }
+    return byte;
+}
+
+uint8_t DHT11::readBit() {
+    // 等待低电平
+    auto start = std::chrono::steady_clock::now();
+    while (gpio.readGPIO(DHT_IO) == 1) {
+        if (std::chrono::steady_clock::now() - start > std::chrono::microseconds(100)) {
+            return 0;  // 超时
+        }
+    }
+
+    // 等待高电平
+    start = std::chrono::steady_clock::now();
+    while (gpio.readGPIO(DHT_IO) == 0) {
+        if (std::chrono::steady_clock::now() - start > std::chrono::microseconds(100)) {
+            return 0;  // 超时
+        }
+    }
+
+    // 等待 40us 后读取电平状态
+    std::this_thread::sleep_for(std::chrono::microseconds(40));
+    return gpio.readGPIO(DHT_IO);
+}

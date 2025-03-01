@@ -56,5 +56,5 @@
         "typeinfo": "cpp",
         "cinttypes": "cpp"
     },
-    "cmake.sourceDirectory": "/home/team38/FromGit/RTEP_Project/pigpio"
+    "cmake.sourceDirectory": "/home/team38/FromGit/RTEP_Project"
 }

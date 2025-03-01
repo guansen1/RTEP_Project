@@ -1,1 +1,1 @@
-/usr/bin/c++ -Wall -O2 -pthread CMakeFiles/alarm_system.dir/main.cpp.o CMakeFiles/alarm_system.dir/gpio/gpio.cpp.o -o alarm_system  -lgpiod 
+/usr/bin/c++ -Wall -O2 -pthread CMakeFiles/alarm_system.dir/main.cpp.o CMakeFiles/alarm_system.dir/gpio/gpio.cpp.o CMakeFiles/alarm_system.dir/dht/dht.cpp.o CMakeFiles/alarm_system.dir/pir/pir.cpp.o -o alarm_system  -lgpiod 

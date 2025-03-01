@@ -129,6 +129,30 @@ alarm_system/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/alarm_system.dir/build.make CMakeFiles/alarm_system.dir/build
 .PHONY : alarm_system/fast
 
+dht/dht.o: dht/dht.cpp.o
+.PHONY : dht/dht.o
+
+# target to build an object file
+dht/dht.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/alarm_system.dir/build.make CMakeFiles/alarm_system.dir/dht/dht.cpp.o
+.PHONY : dht/dht.cpp.o
+
+dht/dht.i: dht/dht.cpp.i
+.PHONY : dht/dht.i
+
+# target to preprocess a source file
+dht/dht.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/alarm_system.dir/build.make CMakeFiles/alarm_system.dir/dht/dht.cpp.i
+.PHONY : dht/dht.cpp.i
+
+dht/dht.s: dht/dht.cpp.s
+.PHONY : dht/dht.s
+
+# target to generate assembly for a file
+dht/dht.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/alarm_system.dir/build.make CMakeFiles/alarm_system.dir/dht/dht.cpp.s
+.PHONY : dht/dht.cpp.s
+
 gpio/gpio.o: gpio/gpio.cpp.o
 .PHONY : gpio/gpio.o
 
@@ -177,6 +201,30 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/alarm_system.dir/build.make CMakeFiles/alarm_system.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+pir/pir.o: pir/pir.cpp.o
+.PHONY : pir/pir.o
+
+# target to build an object file
+pir/pir.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/alarm_system.dir/build.make CMakeFiles/alarm_system.dir/pir/pir.cpp.o
+.PHONY : pir/pir.cpp.o
+
+pir/pir.i: pir/pir.cpp.i
+.PHONY : pir/pir.i
+
+# target to preprocess a source file
+pir/pir.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/alarm_system.dir/build.make CMakeFiles/alarm_system.dir/pir/pir.cpp.i
+.PHONY : pir/pir.cpp.i
+
+pir/pir.s: pir/pir.cpp.s
+.PHONY : pir/pir.s
+
+# target to generate assembly for a file
+pir/pir.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/alarm_system.dir/build.make CMakeFiles/alarm_system.dir/pir/pir.cpp.s
+.PHONY : pir/pir.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -186,12 +234,18 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... alarm_system"
+	@echo "... dht/dht.o"
+	@echo "... dht/dht.i"
+	@echo "... dht/dht.s"
 	@echo "... gpio/gpio.o"
 	@echo "... gpio/gpio.i"
 	@echo "... gpio/gpio.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... pir/pir.o"
+	@echo "... pir/pir.i"
+	@echo "... pir/pir.s"
 .PHONY : help
 
 

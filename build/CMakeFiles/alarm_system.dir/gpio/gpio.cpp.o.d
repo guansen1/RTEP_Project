@@ -162,4 +162,27 @@ CMakeFiles/alarm_system.dir/gpio/gpio.cpp.o: \
  /usr/include/c++/12/bits/enable_special_members.h \
  /usr/include/c++/12/bits/node_handle.h \
  /usr/include/c++/12/bits/unordered_map.h \
- /usr/include/c++/12/bits/erase_if.h
+ /usr/include/c++/12/bits/erase_if.h /usr/include/c++/12/vector \
+ /usr/include/c++/12/bits/stl_uninitialized.h \
+ /usr/include/c++/12/bits/stl_vector.h \
+ /usr/include/c++/12/bits/stl_bvector.h \
+ /usr/include/c++/12/bits/vector.tcc /usr/include/c++/12/thread \
+ /usr/include/c++/12/bits/std_thread.h \
+ /usr/include/c++/12/bits/unique_ptr.h \
+ /usr/include/c++/12/bits/this_thread_sleep.h \
+ /usr/include/c++/12/bits/chrono.h /usr/include/c++/12/ratio \
+ /usr/include/c++/12/limits /usr/include/c++/12/ctime \
+ /usr/include/c++/12/bits/parse_numbers.h /usr/include/c++/12/atomic \
+ /usr/include/c++/12/bits/atomic_base.h \
+ /usr/include/c++/12/bits/atomic_lockfree_defines.h \
+ /usr/include/c++/12/memory /usr/include/c++/12/bits/stl_tempbuf.h \
+ /usr/include/c++/12/bits/stl_raw_storage_iter.h \
+ /usr/include/c++/12/bits/align.h /usr/include/c++/12/bit \
+ /usr/include/c++/12/bits/shared_ptr.h \
+ /usr/include/c++/12/bits/shared_ptr_base.h \
+ /usr/include/c++/12/bits/allocated_ptr.h \
+ /usr/include/c++/12/ext/concurrence.h \
+ /usr/include/c++/12/bits/shared_ptr_atomic.h \
+ /usr/include/c++/12/backward/auto_ptr.h \
+ /usr/include/c++/12/pstl/glue_memory_defs.h \
+ /usr/include/c++/12/pstl/execution_defs.h
