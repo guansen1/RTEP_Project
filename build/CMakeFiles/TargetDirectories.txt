@@ -1,0 +1,3 @@
+/home/team38/FromGit/RTEP_Project/build/CMakeFiles/alarm_system.dir
+/home/team38/FromGit/RTEP_Project/build/CMakeFiles/edit_cache.dir
+/home/team38/FromGit/RTEP_Project/build/CMakeFiles/rebuild_cache.dir
