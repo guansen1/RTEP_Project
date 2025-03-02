@@ -43,15 +43,15 @@ bool DHT11::readData(DHTReading& result) {
     gpio.configGPIO(DHT_IO, OUTPUT);
     gpio.writeGPIO(DHT_IO, 0);  // 拉低引脚
     std::this_thread::sleep_for(std::chrono::milliseconds(20));  // 保持低电平至少 18ms
-    std::cout << "DHT pull down finished " << std::endl;
+    std::cout << "GPIO pull down finished " << std::endl;
     gpio.writeGPIO(DHT_IO, 1);  // 拉高引脚
     std::this_thread::sleep_for(std::chrono::microseconds(30));  // 保持高电平 20~40us
-    std::cout << "DHT pull up finished " << std::endl;
+    std::cout << "GPIO pull up finished " << std::endl;
     // 检查 DHT11 响应
     if (!checkResponse()) {
         return false;
     }
-
+    std::cout << "Checkpass " << std::endl;
     // 读取 40 位数据
     uint8_t data[5] = {0};
     for (int i = 0; i < 5; i++) {
@@ -75,18 +75,20 @@ bool DHT11::checkResponse() {
     auto start = std::chrono::steady_clock::now();
     while (gpio.readGPIO(DHT_IO) == 1) {
         if (std::chrono::steady_clock::now() - start > std::chrono::microseconds(100)) {
+            std::cerr << "DHT pull down failed " << std::endl;
             return false;  // 超时
         }
     }
-
+    std::cout << "DHT pull down finished " << std::endl;
     // 等待 DHT11 拉高引脚 40~80us
     start = std::chrono::steady_clock::now();
     while (gpio.readGPIO(DHT_IO) == 0) {
         if (std::chrono::steady_clock::now() - start > std::chrono::microseconds(100)) {
+            std::cerr << "DHT pull up failed " << std::endl;
             return false;  // 超时
         }
     }
-
+    std::cout << "DHT pull up finished " << std::endl;
     return true;
 }
 
