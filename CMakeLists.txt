@@ -23,6 +23,7 @@ target_link_libraries(alarm_system ${GPIOD_LIBRARIES})
 # 包含头文件目录
 target_include_directories(alarm_system PRIVATE ${GPIOD_INCLUDE_DIRS})
 include_directories(
+    ${CMAKE_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/dht
     ${CMAKE_SOURCE_DIR}/gpio
     ${CMAKE_SOURCE_DIR}/pir
