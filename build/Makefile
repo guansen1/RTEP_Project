@@ -153,6 +153,30 @@ dht/dht.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/alarm_system.dir/build.make CMakeFiles/alarm_system.dir/dht/dht.cpp.s
 .PHONY : dht/dht.cpp.s
 
+display/i2c_display.o: display/i2c_display.cpp.o
+.PHONY : display/i2c_display.o
+
+# target to build an object file
+display/i2c_display.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/alarm_system.dir/build.make CMakeFiles/alarm_system.dir/display/i2c_display.cpp.o
+.PHONY : display/i2c_display.cpp.o
+
+display/i2c_display.i: display/i2c_display.cpp.i
+.PHONY : display/i2c_display.i
+
+# target to preprocess a source file
+display/i2c_display.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/alarm_system.dir/build.make CMakeFiles/alarm_system.dir/display/i2c_display.cpp.i
+.PHONY : display/i2c_display.cpp.i
+
+display/i2c_display.s: display/i2c_display.cpp.s
+.PHONY : display/i2c_display.s
+
+# target to generate assembly for a file
+display/i2c_display.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/alarm_system.dir/build.make CMakeFiles/alarm_system.dir/display/i2c_display.cpp.s
+.PHONY : display/i2c_display.cpp.s
+
 gpio/gpio.o: gpio/gpio.cpp.o
 .PHONY : gpio/gpio.o
 
@@ -237,6 +261,9 @@ help:
 	@echo "... dht/dht.o"
 	@echo "... dht/dht.i"
 	@echo "... dht/dht.s"
+	@echo "... display/i2c_display.o"
+	@echo "... display/i2c_display.i"
+	@echo "... display/i2c_display.s"
 	@echo "... gpio/gpio.o"
 	@echo "... gpio/gpio.i"
 	@echo "... gpio/gpio.s"
