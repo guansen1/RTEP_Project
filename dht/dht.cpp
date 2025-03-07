@@ -63,18 +63,16 @@ bool DHT11::readData(DHTReading& result) {
         std::cout << "0x" << std::hex << static_cast<int>(data[i]) << " ";  // 以十六进制打印
     }
     std::cout << std::endl;
-    /*
-    //temperorily disable check, directly set sample value to result
+    
     if ((data[0] + data[1] + data[2] + data[3]) == data[4]) {
-        result.humidity = data[0];
-        result.temp_celsius = data[2];
+        result.humidity = data[0] + data[1]/10.0f;  // 处理湿度数据
+        result.temp_celsius = data[2] + data[3]/10.0f;  // 处理温度数据
         return true;
     }
+    std::cerr << "Checksum error: " << static_cast<int>(data[0] + data[1] + data[2] + data[3]) 
+              << " != " << static_cast<int>(data[4]) << std::endl;
     return false;
-    */
-    result.humidity = data[0];
-    result.temp_celsius = data[2];
-    return true;
+ 
 }
 
 bool DHT11::checkResponse() {
@@ -111,23 +109,26 @@ uint8_t DHT11::readByte() {
 }
 
 uint8_t DHT11::readBit() {
-    // 等待低电平
+    // 等待低电平结束
     auto start = std::chrono::steady_clock::now();
-    while (gpio.readGPIO(DHT_IO) == 1) {
-        if (std::chrono::steady_clock::now() - start > std::chrono::microseconds(100)) {
-            return 0;  // 超时
-        }
-    }
-
-    // 等待高电平
-    start = std::chrono::steady_clock::now();
     while (gpio.readGPIO(DHT_IO) == 0) {
         if (std::chrono::steady_clock::now() - start > std::chrono::microseconds(100)) {
             return 0;  // 超时
         }
     }
 
-    // 等待 40us 后读取电平状态
-    std::this_thread::sleep_for(std::chrono::microseconds(40));
-    return gpio.readGPIO(DHT_IO);
+    // 测量高电平持续时间
+    start = std::chrono::steady_clock::now();
+    while (gpio.readGPIO(DHT_IO) == 1) {
+        if (std::chrono::steady_clock::now() - start > std::chrono::microseconds(100)) {
+            return 0;  // 超时
+        }
+    }
+    
+    // 计算高电平持续时间
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
+        std::chrono::steady_clock::now() - start).count();
+        
+    // 如果高电平持续时间大于约50us，则为1，否则为0
+    return (duration > 50) ? 1 : 0;
 }
