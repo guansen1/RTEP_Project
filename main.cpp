@@ -6,6 +6,7 @@
 #include "dht/dht.h"
 #include "display/i2c_display.h"
 #include "i2c_handle.h"
+#include "keyboard.h" 
 
 int main() {
     std::cout << "系统启动！" << std::endl;
