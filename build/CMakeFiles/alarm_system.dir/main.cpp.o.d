@@ -194,4 +194,6 @@ CMakeFiles/alarm_system.dir/main.cpp.o: \
  /usr/include/c++/12/bits/algorithmfwd.h \
  /usr/include/c++/12/bits/stl_heap.h \
  /usr/include/c++/12/bits/uniform_int_dist.h \
+ /home/team38/FromGit/RTEP_Project/display/i2c_display.h \
+ /home/team38/FromGit/RTEP_Project/display/i2c_handle.h \
  /home/team38/FromGit/RTEP_Project/display/i2c_display.h
