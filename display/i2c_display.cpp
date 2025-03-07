@@ -7,13 +7,12 @@
 #include <cstring>
 #include <cerrno>
 #include <cstdlib>
-#include <unistd.h>
 
-// I2C 总线路径与设备地址（根据实际硬件调整）
+// I2C 总线路径与 SSD1306 设备地址（请根据实际硬件调整）
 static const char* I2C_BUS = "/dev/i2c-1";
 static const int I2C_ADDR = 0x3C;
 
-// 完整的 5x7 字体数组，覆盖 ASCII 32 到 126，共 95 个字符
+// 完整的 5x7 字体数组（ASCII 32~126，共 95 个字符）
 static const uint8_t font5x7[95][5] = {
   {0x00,0x00,0x00,0x00,0x00}, // ' ' (32)
   {0x00,0x00,0x5F,0x00,0x00}, // '!'
@@ -109,13 +108,10 @@ static const uint8_t font5x7[95][5] = {
   {0x00,0x08,0x36,0x41,0x00}, // '{'
   {0x00,0x00,0x7F,0x00,0x00}, // '|'
   {0x00,0x41,0x36,0x08,0x00}, // '}'
-  {0x10,0x08,0x08,0x10,0x08}  // '~' (126)
+  {0x10,0x08,0x08,0x10,0x08}  // '~'
 };
 
-//
-// I2cDisplay 成员函数实现
-//
-
+// 单例实现
 I2cDisplay& I2cDisplay::getInstance() {
     static I2cDisplay instance;
     return instance;
@@ -131,6 +127,7 @@ I2cDisplay::~I2cDisplay() {
     }
 }
 
+// 初始化 SSD1306
 void I2cDisplay::init() {
     i2c_fd = open(I2C_BUS, O_RDWR);
     if (i2c_fd < 0) {
@@ -143,13 +140,13 @@ void I2cDisplay::init() {
         i2c_fd = -1;
         exit(EXIT_FAILURE);
     }
-    // 发送 SSD1306 初始化命令序列（简化版）
+    // 发送 SSD1306 初始化命令序列
     sendCommand(0xAE); // 关闭显示
     sendCommand(0x20); // 设置内存寻址模式
     sendCommand(0x00); // 水平寻址模式
     sendCommand(0x40); // 起始行地址为0
-    sendCommand(0x8D); 
-    sendCommand(0x14); 
+    sendCommand(0x8D); // 使能充电泵命令
+    sendCommand(0x14); // 使能充电泵
     sendCommand(0xA1); // 段重映射
     sendCommand(0xC8); // COM 输出扫描方向
     sendCommand(0xA8); // 多路复用率
@@ -160,7 +157,7 @@ void I2cDisplay::init() {
     sendCommand(0x80);
     sendCommand(0xD9); // 预充电周期
     sendCommand(0xF1);
-    sendCommand(0xDA); // COM引脚硬件配置
+    sendCommand(0xDA); // COM 引脚硬件配置
     sendCommand(0x12);
     sendCommand(0xDB); // VCOMH 去激电平
     sendCommand(0x40);
@@ -172,10 +169,9 @@ void I2cDisplay::init() {
     std::cout << "SSD1306 初始化完成" << std::endl;
 }
 
+// 发送命令
 void I2cDisplay::sendCommand(uint8_t cmd) {
-    uint8_t data[2];
-    data[0] = 0x00; // 控制字节，表示命令
-    data[1] = cmd;
+    uint8_t data[2] = {0x00, cmd};
     ssize_t bytes = write(i2c_fd, data, 2);
     if (bytes != 2) {
         std::cerr << "发送命令 0x" << std::hex << (int)cmd << " 失败: " << strerror(errno) << std::endl;
@@ -183,6 +179,7 @@ void I2cDisplay::sendCommand(uint8_t cmd) {
     usleep(1000);
 }
 
+// 发送缓冲区数据
 void I2cDisplay::sendBuffer(const uint8_t* buf, size_t len) {
     uint8_t* tmp = new uint8_t[len + 1];
     tmp[0] = 0x40; // 控制字节，表示数据
@@ -194,35 +191,37 @@ void I2cDisplay::sendBuffer(const uint8_t* buf, size_t len) {
     delete[] tmp;
 }
 
+// 清空缓冲区
 void I2cDisplay::clearBuffer() {
     memset(buffer, 0, sizeof(buffer));
 }
 
+// 计算文本宽度
 int I2cDisplay::textWidth(const std::string &text) {
-    return text.size() * 6; // 每字符占 5 像素 + 1 像素间隔
+    return text.size() * 6;
 }
 
+// 在页0绘制单个字符
 void I2cDisplay::drawChar(int x, char c) {
-    if (c < 32 || c > 126) c = 32; // 不支持的字符用空格替代
+    if (c < 32 || c > 126) c = 32;
     int index = c - 32;
-    // 绘制到 buffer 的第 0 页（顶部 8 像素）
     for (int col = 0; col < 5; col++) {
         int pos = x + col;
         if (pos >= 0 && pos < 128) {
             buffer[pos] = font5x7[index][col];
         }
     }
-    // 第6列留空
     int pos = x + 5;
     if (pos >= 0 && pos < 128) {
         buffer[pos] = 0x00;
     }
 }
 
+// 单行显示文本（默认在页0）
 void I2cDisplay::displayText(const std::string &text) {
     clearBuffer();
     int w = textWidth(text);
-    int start_x = (128 - w) / 2;  // 水平居中
+    int start_x = (128 - w) / 2;
     int x = start_x;
     for (char c : text) {
         drawChar(x, c);
@@ -231,18 +230,67 @@ void I2cDisplay::displayText(const std::string &text) {
     sendBuffer(buffer, sizeof(buffer));
 }
 
+// 在指定页绘制单个字符
+void I2cDisplay::drawCharAt(int x, int page, char c) {
+    if (c < 32 || c > 126) c = 32;
+    int index = c - 32;
+    int offset = page * 128; // 每页128字节
+    for (int col = 0; col < 5; col++) {
+        int pos = offset + x + col;
+        if ((x + col) < 128) {
+            buffer[pos] = font5x7[index][col];
+        }
+    }
+    int pos = offset + x + 5;
+    if ((x + 5) < 128) {
+        buffer[pos] = 0x00;
+    }
+}
+
+// 在指定页绘制文本，自动居中
+void I2cDisplay::displayTextAt(int page, const std::string &text) {
+    int w = text.size() * 6;
+    int start_x = (128 - w) / 2;
+    int x = start_x;
+    for (char c : text) {
+        drawCharAt(x, page, c);
+        x += 6;
+    }
+}
+
+// 显示两行文本（例如温湿度数据），分别绘制在页2和页4
+void I2cDisplay::displayMultiLine(const std::string &line1, const std::string &line2) {
+    clearBuffer();
+    displayTextAt(2, line1);
+    displayTextAt(4, line2);
+    sendBuffer(buffer, sizeof(buffer));
+}
+
+// 显示 "INVASION"
 void I2cDisplay::displayIntrusion() {
     displayText("INVASION");
     std::cout << "[DISPLAY] INVASION" << std::endl;
     if (eventCallback) eventCallback("INVASION");
 }
 
+// 显示 "SAFE"
 void I2cDisplay::displaySafe() {
     displayText("SAFE");
     std::cout << "[DISPLAY] SAFE" << std::endl;
     if (eventCallback) eventCallback("SAFE");
 }
 
+// 显示 SAFE 与温湿度数据：在页0显示 "SAFE"，页2显示温度，页4显示湿度
+void I2cDisplay::displaySafeAndDHT(const std::string &tempStr, const std::string &humStr) {
+    clearBuffer();
+    displayTextAt(0, "SAFE");
+    displayTextAt(2, tempStr);
+    displayTextAt(4, humStr);
+    sendBuffer(buffer, sizeof(buffer));
+}
+
 void I2cDisplay::registerEventCallback(std::function<void(const std::string&)> callback) {
     eventCallback = callback;
 }
+
+

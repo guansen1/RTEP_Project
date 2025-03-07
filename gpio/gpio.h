@@ -38,7 +38,7 @@ class GPIO {
         bool configGPIO(int pin_number, int config_num);
         int readGPIO(int pin_number);
         bool writeGPIO(int pin_number, int value);
-        void registerCallback(GPIOEventCallbackInterface* callback);
+        void registerCallback(int pin_number, GPIOEventCallbackInterface* callback);
         void start();
         void stop();
     
@@ -51,7 +51,7 @@ class GPIO {
         struct gpiod_chip* chip;
         std::unordered_map<int, struct gpiod_line*> gpio_pins;
         std::unordered_map<int, int> gpio_config;
-        std::vector<GPIOEventCallbackInterface*> callbacks;
+        std::unordered_map<int, std::vector<GPIOEventCallbackInterface*>> callbacks;
         std::thread workerThread;
         std::atomic<bool> running;
     };

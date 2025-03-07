@@ -83,8 +83,8 @@ bool GPIO::writeGPIO(int pin_number, int value) {
     return true;
 }
 
-void GPIO::registerCallback(GPIOEventCallbackInterface* callback) {
-    callbacks.push_back(callback);
+void GPIO::registerCallback(int pin_number, GPIOEventCallbackInterface* callback) {
+    callbacks[pin_number].push_back(callback);
 }
 
 void GPIO::start() {
@@ -108,8 +108,10 @@ void GPIO::worker() {
                 if (result == 1) {
                     gpiod_line_event event;
                     if (readEvent(pin.first, event)) {
-                        for (auto& callback : callbacks) {
-                            callback->handleEvent(event);
+                        if (callbacks.find(pin.first) != callbacks.end()) {
+                            for (auto& callback : callbacks[pin.first]) {
+                                callback->handleEvent(event);
+                            }
                         }
                     }
                 }

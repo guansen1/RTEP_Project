@@ -35,6 +35,7 @@ add_executable(alarm_system
     dht/dht.cpp 
     pir/pir.cpp 
     display/i2c_display.cpp
+    display/i2c_handle.cpp
 )
 
 # 链接库
