@@ -1,0 +1,3 @@
+/Users/wodezhongguo/Documents/PlatformIO/Projects/Team38 Screen/build/CMakeFiles/my_app.dir
+/Users/wodezhongguo/Documents/PlatformIO/Projects/Team38 Screen/build/CMakeFiles/edit_cache.dir
+/Users/wodezhongguo/Documents/PlatformIO/Projects/Team38 Screen/build/CMakeFiles/rebuild_cache.dir
