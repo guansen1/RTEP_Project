@@ -36,11 +36,23 @@ int main() {
     });
     dht11.start();
 
+    if (!initKeyboard()) {                               //初始化键盘
+        std::cerr << "⚠️ 键盘初始化失败！" << std::endl;
+        return -1;
+    }
+std::cout << "🔄 矩阵键盘已启动..." << std::endl;
+
+    std::thread keyboardThread([]() { keyboardLoop(); }); // ✅ 启动键盘监听线程
+keyboardThread.detach(); // 让它在后台运行，不影响主进程
+
+    
     // 主循环保持运行
     while (true) {
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
+    // add: 释放资源
+    cleanupKeyboard(); 
     gpio.stop();
     std::cout << "退出程序。" << std::endl;
     return 0;
