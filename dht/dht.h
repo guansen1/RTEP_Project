@@ -4,6 +4,8 @@
 
 #include "gpio/gpio.h"
 #include <functional>
+#include <thread>
+#include <atomic>
 
 // 定义 DHT11 的数据结构
 struct DHTReading {
