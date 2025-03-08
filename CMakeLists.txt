@@ -36,6 +36,7 @@ add_executable(alarm_system
     pir/pir.cpp 
     display/i2c_display.cpp
     display/i2c_handle.cpp
+    keyboard.cpp  # ✅ 加入键盘代码
 )
 
 # 链接库
