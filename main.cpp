@@ -35,7 +35,7 @@ int main() {
         displayHandle.handleDHT(reading.temp_celsius, reading.humidity);
     });
     dht11.start();
-
+    initKeyboard(gpio);  // 🔴 **这是新增加的**
     if (!initKeyboard()) {                               //初始化键盘
         std::cerr << "⚠️ 键盘初始化失败！" << std::endl;
         return -1;
