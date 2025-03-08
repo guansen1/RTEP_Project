@@ -3,9 +3,9 @@
 
 using namespace std;
 
-// **定义矩阵键盘 GPIO**
-const int rowPins[4] = {4, 17, 27, 22};  // 行（输出）
-const int colPins[4] = {5, 6, 13, 19};  // 列（输入，触发事件）
+// **新的 GPIO 引脚定义**
+const int rowPins[4] = {1, 7, 8, 12};  // 行（输出）
+const int colPins[4] = {16, 23, 24, 25};  // 列（输入，触发事件）
 
 const char keyMap[4][4] = {
     {'1', '2', '3', 'A'},
@@ -17,8 +17,15 @@ const char keyMap[4][4] = {
 // **初始化键盘**
 void initKeyboard(GPIO& gpio) {
     cout << "⌨️ 初始化键盘 GPIO..." << endl;
+
+    // **配置行引脚为输出**
+    for (int row : rowPins) {
+        gpio.configGPIO(row, OUTPUT);
+    }
+
+    // **注册列引脚事件**
     for (int col : colPins) {
-        gpio.registerCallback(col, new KeyboardEventHandler()); // 🔴 **注册事件**
+        gpio.registerCallback(col, new KeyboardEventHandler());
     }
 }
 
@@ -33,8 +40,18 @@ KeyboardEventHandler::KeyboardEventHandler() : input_buffer("") {}
 KeyboardEventHandler::~KeyboardEventHandler() {}
 
 void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
-    // **遍历行，检查哪个按键被按下**
+    int colIndex = -1;
+    for (int i = 0; i < 4; i++) {
+        if (colPins[i] == event.line_offset) {
+            colIndex = i;
+            break;
+        }
+    }
+
+    if (colIndex == -1) return;
+
+    // **检测按下的键**
     for (int row = 0; row < 4; row++) {
-        cout << "🔘 按键检测: " << keyMap[row][event.line_offset] << endl;
+        cout << "🔘 按键检测: " << keyMap[row][colIndex] << endl;
     }
 }
