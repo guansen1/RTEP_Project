@@ -5,8 +5,8 @@
 using namespace std;
 
 // **矩阵键盘 GPIO 引脚定义**
-const int rowPins[4] = {1, 7, 8, 12};  // 行（事件触发）
-const int colPins[4] = {16, 23, 24, 25};  // 列（事件触发）
+const int rowPins[4] = {1, 7, 8, 11};  // 行（事件触发）
+const int colPins[4] = {12, 16, 20, 21};  // 列（事件触发）
 
 const char keyMap[4][4] = {
     {'1', '2', '3', 'A'},
