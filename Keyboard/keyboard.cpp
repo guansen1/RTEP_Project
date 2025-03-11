@@ -49,7 +49,7 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
     static bool keyDetected = false;
     static auto lastPressTime = chrono::steady_clock::now();
 
-    int pin = event.line_offset;
+    int pin = event.offset;
     bool isRow = false, isCol = false;
 
     // **检测是否是行事件**
