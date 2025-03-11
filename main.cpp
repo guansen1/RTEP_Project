@@ -35,16 +35,14 @@ int main() {
         displayHandle.handleDHT(reading.temp_celsius, reading.humidity);
     });
     dht11.start();
-    // ✅ **新增：初始化键盘**
-    if (!initKeyboard(gpio)) {   
-        std::cerr << "⚠️ 键盘初始化失败！" << std::endl;
-        return -1;
-    }
+/ ✅ **修改后的键盘引脚初始化**
+    initKeyboard(gpio);   
     std::cout << "🔄 矩阵键盘已启动..." << std::endl;
 
-    // ✅ **新增：启动键盘监听线程**
+    // ✅ **启动键盘监听线程**
     std::thread keyboardThread([]() { keyboardLoop(); }); 
     keyboardThread.detach(); // **后台运行，不影响主进程**
+
 
     
     // 主循环保持运行
