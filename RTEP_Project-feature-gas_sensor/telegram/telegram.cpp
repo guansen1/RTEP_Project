@@ -26,7 +26,7 @@ bool sendTelegramMessage(const std::string &token, const std::string &chat_id, c
     // 释放编码后的消息
     curl_free(escapedMessage);
 
-    // 设置 curl 参数
+    // 设置 curl 参数  
     curl_easy_setopt(curl, CURLOPT_URL, url.str().c_str());
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 

@@ -3,7 +3,7 @@
 
 #include <string>
 
-// 发送 Telegram 消息的函数声明
+// 发送 Telegram 消息的函数声明  
 // 参数 token：Bot 的 API Token
 // 参数 chat_id：目标聊天的 ID
 // 参数 message：要发送的消息文本
