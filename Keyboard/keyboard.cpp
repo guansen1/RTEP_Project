@@ -14,6 +14,12 @@ const char keyMap[4][4] = {
     {'7', '8', '9', 'C'},
     {'*', '0', '#', 'D'}
 };
+// ✅ 监听键盘输入
+void keyboardLoop() {
+    while (true) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+}
 
 // **初始化键盘**
 void initKeyboard(GPIO& gpio) {
