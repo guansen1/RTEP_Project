@@ -9,6 +9,8 @@ void initKeyboard(GPIO& gpio);
 
 // **释放键盘 GPIO**
 void cleanupKeyboard();
+// **键盘监听循环（✅ 新增）**
+void keyboardLoop();
 
 // **键盘事件回调**
 class KeyboardEventHandler : public GPIO::GPIOEventCallbackInterface {
