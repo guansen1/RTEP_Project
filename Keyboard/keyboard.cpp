@@ -155,6 +155,61 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
 }
 
 
+
+/////////////
+    void Keyboard::init() {
+    cout << "⌨️ 初始化键盘 GPIO..." << endl;
+    
+    for (int row : rowPins) {
+        auto* handler = new KeyboardEventHandler(this);
+        gpio.registerCallback(row, handler, GPIOD_LINE_EVENT_FALLING_EDGE);  // ✅ 确保 registerCallback 存在
+
+        // ✅ 获取 GPIO 线路
+        struct gpiod_line *line = gpiod_chip_get_line(gpio.getChip(), row);
+        if (!line) {
+            cerr << "❌ 无法获取 GPIO 线路: " << row << endl;
+            continue;
+        }
+
+        // ✅ 设置为输入 + 内部上拉
+        struct gpiod_line_request_config config = {};
+        config.consumer = "keyboard";
+        config.request_type = GPIOD_LINE_REQUEST_DIRECTION_INPUT;
+        config.flags = GPIOD_LINE_REQUEST_FLAG_BIAS_PULL_UP;
+        if (gpiod_line_request(line, &config, 0) < 0) {
+            cerr << "❌ 无法请求 GPIO 线路: " << row << endl;
+        }
+
+        handlers.push_back(handler);
+    }
+
+    for (int col : colPins) {
+        auto* handler = new KeyboardEventHandler(this);
+        gpio.registerCallback(col, handler, GPIOD_LINE_EVENT_FALLING_EDGE);  // ✅ 确保 registerCallback 存在
+
+        // ✅ 获取 GPIO 线路
+        struct gpiod_line *line = gpiod_chip_get_line(gpio.getChip(), col);
+        if (!line) {
+            cerr << "❌ 无法获取 GPIO 线路: " << col << endl;
+            continue;
+        }
+
+        // ✅ 设置为输入模式（列不需要上拉）
+        struct gpiod_line_request_config config = {};
+        config.consumer = "keyboard";
+        config.request_type = GPIOD_LINE_REQUEST_DIRECTION_INPUT;
+        if (gpiod_line_request(line, &config, 0) < 0) {
+            cerr << "❌ 无法请求 GPIO 线路: " << col << endl;
+        }
+
+        handlers.push_back(handler);
+    }
+}
+
+    /////////////////////////////////////
+
+
+    
     
 
 
