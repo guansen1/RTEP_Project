@@ -25,6 +25,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/gpio  # 确保包含 gpio 目录
     ${CMAKE_SOURCE_DIR}/pir
     ${CMAKE_SOURCE_DIR}/display
+    ${CMAKE_SOURCE_DIR}/keyboard
 )
 
 
