@@ -61,6 +61,26 @@ int GPIO::getPinFromEvent(const gpiod_line_event& event) {
 
 
 
+    int pin_number = -1;  // ✅ 直接获取 GPIO 事件的 pin 编号
+
+    // ✅ **遍历 `gpio_pins` 找到 `pin_number`（不使用 `event.source.offset`）**
+    for (const auto& gpio_pin : parent->gpio.gpio_pins) {
+        if (parent->gpio.readEvent(gpio_pin.first, event)) {  
+            pin_number = gpio_pin.first;
+            break;  // ✅ 找到后立即退出，避免多次匹配
+        }
+    }
+
+    if (pin_number == -1) {  
+        std::cerr << "❌ 无法解析 GPIO 事件！" << std::endl;
+        return;
+    }
+
+    std::cout << "🔍 触发 GPIO 事件，pin_number: " << pin_number << std::endl;
+
+
+
+
 
 
 
