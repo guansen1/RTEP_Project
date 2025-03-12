@@ -30,9 +30,6 @@ enum GPIOdef{
     DHT_IO = 18,
     KB_R7_IO = 20,
     KB_R8_IO = 21
-    //const int rowPins[4] = {1, 7, 8, 11};  // 行（事件触发）
-    //const int colPins[4] = {12, 16, 20, 21};  // 列（事件触发）
-   
     
 };
 
