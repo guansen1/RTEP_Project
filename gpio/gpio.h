@@ -19,9 +19,21 @@ enum GPIOconfig{
     BOTH_EDGES = 6          // 双边沿触发事件
 };
 enum GPIOdef{
+    KB_R1_IO = 1,
+    KB_R2_IO = 7,
+    KB_R3_IO = 8,
+    KB_R4_IO = 11,
+    KB_R5_IO = 12,
     PIR_IO = 14,
     BUZZER_IO = 15,
-    DHT_IO = 18
+    KB_R6_IO = 16,
+    DHT_IO = 18,
+    KB_R7_IO = 20,
+    KB_R8_IO = 21
+    //const int rowPins[4] = {1, 7, 8, 11};  // 行（事件触发）
+    //const int colPins[4] = {12, 16, 20, 21};  // 列（事件触发）
+   
+    
 };
 
 class GPIO {
