@@ -1,6 +1,7 @@
-#include "keyboard.h"
+#include "Keyboard/keyboard.h"
 #include <iostream>
 #include <chrono>
+#include <gpio/gpio.h>
 
 using namespace std;
 
@@ -49,20 +50,27 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
     static bool keyDetected = false;
     static auto lastPressTime = chrono::steady_clock::now();
 
-    int pin = event.offset;
-    bool isRow = false, isCol = false;
+    // **注册行列引脚事件**
+    for (int row : rowPins) {
+        gpio.registerCallback(row, new KeyboardEventHandler());
+    }
+    for (int col : colPins) {
+        gpio.registerCallback(col, new KeyboardEventHandler());
+    }
+}
+
+  bool isRow = false, isCol = false;
 
     // **检测是否是行事件**
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4 ; i++) {
         if (rowPins[i] == pin) {
             activeRow = i;
             isRow = true;
             break;
         }
     }
-
     // **检测是否是列事件**
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4 ; i++) {
         if (colPins[i] == pin) {
             activeCol = i;
             isCol = true;
@@ -86,4 +94,4 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
         activeRow = -1;
         activeCol = -1;
     }
-}
+//}
