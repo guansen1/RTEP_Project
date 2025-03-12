@@ -209,8 +209,7 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
     /////////////////////////////////////
 
 
-    
-    
+    strace -e poll,read ./keyboard_app
 
 
         
