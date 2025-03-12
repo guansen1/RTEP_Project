@@ -35,11 +35,12 @@ int main() {
         displayHandle.handleDHT(reading.temp_celsius, reading.humidity);
     });
     dht11.start();
+    
     // **初始化矩阵键盘**
     Keyboard keyboard(gpio);
     keyboard.init();
+    keyboard.cleanup();
     std::cout << "🔄 矩阵键盘已启动..." << std::endl;
-
 
 
     
@@ -49,7 +50,7 @@ int main() {
     }
 
     // add: 释放资源
-    cleanupKeyboard(); 
+   // cleanupKeyboard(); 
     gpio.stop();
     std::cout << "退出程序。" << std::endl;
     return 0;
