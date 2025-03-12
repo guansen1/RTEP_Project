@@ -26,6 +26,47 @@ Keyboard::~Keyboard() {
     cleanup();
 }
 
+
+ int pin_number = parent->gpio.getPinFromEvent(event);  // ✅ 确保 pin_number 获取正确
+    if (pin_number == -1) {  
+        std::cerr << "❌ 无法解析 GPIO 事件！" << std::endl;
+        return;
+    }
+
+    std::cout << "🔍 触发 GPIO 事件，pin_number: " << pin_number << std::endl;
+
+
+   if (rowIndex == -1 || colIndex == -1) {  
+        std::cerr << "⚠️ 无效的按键 GPIO: " << pin_number << std::endl;
+        return;
+    }
+
+
+td::cout << "✅ 按键解析成功: " << keyMap[rowIndex][colIndex] << std::endl;
+
+
+
+
+
+
+
+int GPIO::getPinFromEvent(const gpiod_line_event& event) {
+    for (const auto& gpio_pin : gpio_pins) {
+        if (gpio_pin.second == gpio_pins[event.source.offset]) {  // ✅ 找到正确 GPIO 端口
+            return gpio_pin.first;
+        }
+    }
+    return -1;  // ❌ 没有找到匹配的 GPIO
+}
+
+
+
+
+
+
+
+
+
 void Keyboard::init() {
     cout << "⌨️ 初始化键盘 GPIO..." << endl;
     for (int row : rowPins) {
