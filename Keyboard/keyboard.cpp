@@ -1,4 +1,22 @@
-#include "keyboard.h"
+#include "Keyboard/keyboard.h"
+#include "i2c_display.h"
+#include <iostream>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <linux/i2c-dev.h>
+#include <cstring>
+#include <cerrno>
+#include <cstdlib>
+#include <chrono>
+
+// **矩阵键盘 GPIO 引脚定义**
+//const int rowPins[4] = {1, 7, 8, 11};  // 行（事件触发）
+//const int colPins[4] = {12, 16, 20, 21};  // 列（事件触发）
+
+    const int rowPins[4] = {KB_R1_IO, KB_R2_IO, KB_R3_IO, KB_R4_IO};  // 行（事件触发）
+    const int colPins[4] = {KB_R5_IO, KB_R6_IO, KB_R7_IO, KB_R8_IO};  // 列（事件触发）
+    
 
 using namespace std;
 
@@ -40,34 +58,10 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
     static bool keyDetected = false;
     static auto lastPressTime = chrono::steady_clock::now();
 
-    int pin = event.source.offset;
+    int pin_number = event.line;          /////////////////////////////////
     int rowIndex = -1, colIndex = -1;
 
-
-oid KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
-    static bool keyDetected = false;
-    static auto lastPressTime = chrono::steady_clock::now();
-
-    // 🚀 使用 `gpio_pins` 查找 GPIO 编号，替代 `event.line_offset`
-    int pin_number = -1;
-
-    for (const auto& pin : parent->gpio.gpio_pins) {  // 遍历已注册的 GPIO
-        if (pin.second == event.line_offset) {  
-            pin_number = pin.first;  
-            break;
-        }
-    }
-
-    if (pin_number == -1) {
-        std::cerr << "❌ 无法确定 GPIO 事件的 pin_number！" << std::endl;
-        return;
-    }
-
-    std::cout << "🔍 处理 GPIO 事件，pin: " << pin_number << std::endl;
-
-    int rowIndex = -1, colIndex = -1;
-
-    // 识别行号
+    // 检测行
     for (int i = 0; i < 4; i++) {
         if (rowPins[i] == pin_number) {
             rowIndex = i;
@@ -75,44 +69,9 @@ oid KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
         }
     }
 
-    // 识别列号
-    for (int i = 0; i < 4; i++) {
-        if (colPins[i] == pin_number) {
-            colIndex = i;
-            break;
-        }
-    }
-
-    if (rowIndex == -1 || colIndex == -1) {
-        std::cerr << "⚠️ 无效的按键 GPIO: " << pin_number << std::endl;
-        return;
-    }
-
-    auto now = chrono::steady_clock::now();
-    if (event.event_type == GPIOD_LINE_EVENT_RISING_EDGE && !keyDetected) {  
-        if (chrono::duration_cast<chrono::milliseconds>(now - lastPressTime).count() > 50) {  
-            parent->processKeyPress(rowIndex, colIndex);
-            keyDetected = true;
-            lastPressTime = now;
-        }
- //   } else if (event.event_type == GPIOD_LINE_EVENT_FALLING_EDGE) {  
-//        keyDetected = false;
-//    }
-//}
-
-
-    
-    // 检测行
-    for (int i = 0; i < 4; i++) {
-        if (rowPins[i] == pin) {
-            rowIndex = i;
-            break;
-        }
-    }
-
     // 检测列
     for (int i = 0; i < 4; i++) {
-        if (colPins[i] == pin) {
+        if (colPins[i] == pin_number) {    
             colIndex = i;
             break;
         }
