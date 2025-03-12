@@ -19,7 +19,7 @@ void DHT11::start() {
     // create timerfd
     timerfd = timerfd_create(CLOCK_MONOTONIC, 0);
     if (timerfd == -1) {
-        std::cerr << "创建定时器失败: " << strerror(errno) << std::endl;
+        std::cerr << "set timer failed: " << strerror(errno) << std::endl;
         return;
     }
     

@@ -22,12 +22,21 @@ public:
     void start();
     void stop();
     void registerCallback(std::function<void(const DHTReading&)> callback);
+    
+    // 将readData改为公有方法，以便测试
+    bool readData(DHTReading& result);
+    
+    // 添加测试专用的平滑处理方法
+    #ifdef TEST_SMOOTHING_ENABLED
+    void testSmoothReadings(DHTReading& reading) {
+        smoothReadings(reading);
+    }
+    #endif
 
 private:
     void worker();
     void timerEvent();  
 
-    bool readData(DHTReading& result);
     bool checkResponse();
     uint8_t readByte();
     uint8_t readBit();
@@ -46,4 +55,4 @@ private:
     bool history_filled = false;
 };
 
-#endif 
+#endif  // DHT_H
