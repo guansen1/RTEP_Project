@@ -107,6 +107,23 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
 
         //void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
    // std::cout << "🔘 按键被按下: 5" << std::endl;
+
+#include <gpiod.h>
+#include <iostream>
+
+void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
+    struct gpiod_line *line = gpiod_line_request_get_lines(event);
+    if (!line) {
+        std::cerr << "❌ 无法获取 GPIO 触发引脚!" << std::endl;
+        return;
+    }
+
+   // int pin_number = gpiod_line_offset(line);  // 获取 GPIO 引脚编号
+ //   std::cout << "🔍 触发 GPIO 事件, pin: " << pin_number << std::endl;
+//}
+
+
+        
 //}
     }
 }
