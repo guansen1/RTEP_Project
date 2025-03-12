@@ -11,8 +11,8 @@
 
 // **矩阵键盘 GPIO 引脚定义**
 
-    extern const int rowPins[4]; //= {KB_R1_IO,KB_R2_IO,KB_R3_IO,KB_R4_IO};  // 行（事件触发）
-    extern const int colPins[4]; //= {KB_R5_IO,KB_R6_IO,KB_R7_IO,KB_R8_IO};  // 列（事件触发）
+extern const int rowPins[4]; //= {KB_R1_IO,KB_R2_IO,KB_R3_IO,KB_R4_IO};  // 行（事件触发）
+extern const int colPins[4]; //= {KB_R5_IO,KB_R6_IO,KB_R7_IO,KB_R8_IO};  // 列（事件触发）
 
 const char keyMap[4][4] = {
     {'1', '2', '3', 'A'},
@@ -25,8 +25,7 @@ const char keyMap[4][4] = {
 class KeyboardEventHandler : public GPIO::GPIOEventCallbackInterface {
 public:
     explicit KeyboardEventHandler(class Keyboard* parent);
-    virtual ~KeyboardEventHandler() = default;
-    void handleEvent(const gpiod_line_event& event) override;
+    virid handleEvent(const gpiod_line_event& event) override;
 
 private:
     Keyboard* parent;
