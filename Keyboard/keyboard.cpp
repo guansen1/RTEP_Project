@@ -43,6 +43,20 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
     int pin = event.source.offset;
     int rowIndex = -1, colIndex = -1;
 
+
+ // 调试输出，检查 `event.line_offset`
+//    std::cout << "🔍 处理 GPIO 事件，offset: " << event.line_offset << std::endl;
+
+//    if (event.line_offset < 0) {  // **防止访问无效 GPIO**
+//        std::cerr << "❌ 无效的 GPIO 事件 offset: " << event.line_offset << std::endl;
+//        return;
+//    }
+
+//    int pin = event.line_offset;  // **使用 event.line_offset**
+//    int rowIndex = -1, colIndex = -1;
+
+
+    
     // 检测行
     for (int i = 0; i < 4; i++) {
         if (rowPins[i] == pin) {
