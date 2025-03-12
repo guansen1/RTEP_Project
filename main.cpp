@@ -6,7 +6,7 @@
 #include "dht/dht.h"
 #include "i2c_display.h"
 #include "i2c_handle.h"
-
+#include "buzzer/buzzer.h"
 int main() {
     std::cout << "PIR 传感器监听系统启动！\n";
 
@@ -15,6 +15,7 @@ int main() {
 
     // 初始化 GPIO（红外检测、其他设备）
     GPIO gpio;
+    Buzzer buzzer(gpio, BUZZER_IO);
     gpio.gpio_init();  // 初始化 GPIO
 
     // 注册 PIR 事件处理器（你原来的处理器，负责打印信息等）
