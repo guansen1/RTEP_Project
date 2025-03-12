@@ -61,6 +61,32 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
     int pin_number = event.line;          /////////////////////////////////
     int rowIndex = -1, colIndex = -1;
 
+
+
+   int pin_number = -1;  // 🚀 变量存储 GPIO 事件的 pin 编号
+
+    // 🚀 直接遍历 `gpio_pins` 以找到正确的 `pin_number`
+    for (const auto& pin : parent->gpio.gpio_pins) {
+        if (parent->gpio.readEvent(pin.first, event)) {  // 确保 `readEvent()` 成功读取事件
+            pin_number = pin.first;
+            break;
+        }
+    }
+
+    if (pin_number == -1) {  // 🚀 确保 `pin_number` 有效
+        std::cerr << "❌ 无法确定 GPIO 事件的 pin_number！" << std::endl;
+        return;
+    }
+
+    std::cout << "🔍 处理 GPIO 事件，pin: " << pin_number << std::endl;
+
+    int rowIndex = -1, colIndex = -1;
+
+
+
+
+
+    
     // 检测行
     for (int i = 0; i < 4; i++) {
         if (rowPins[i] == pin_number) {
