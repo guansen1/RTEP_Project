@@ -10,13 +10,13 @@
 #include <memory>
 
 enum GPIOconfig{
-    INPUT = 0,              // 输入模式
-    OUTPUT = 1,             // 输出模式
-    INPUT_PULLUP = 2,       // 上拉输入
-    INPUT_PULLDOWN = 3,     // 下拉输入
-    RISING_EDGE = 4,        // 上升沿触发事件
-    FALLING_EDGE = 5,       // 下降沿触发事件
-    BOTH_EDGES = 6          // 双边沿触发事件
+    INPUT = 0,              // input
+    OUTPUT = 1,             // output
+    INPUT_PULLUP = 2,       // pull up
+    INPUT_PULLDOWN = 3,     // pull down
+    RISING_EDGE = 4,        // RISING_EDGE
+    FALLING_EDGE = 5,       // FALLING_EDGE
+    BOTH_EDGES = 6          // BOTH_EDGES
 };
 enum GPIOdef{
     PIR_IO = 14,
