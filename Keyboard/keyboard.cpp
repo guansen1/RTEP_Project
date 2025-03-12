@@ -1,22 +1,11 @@
 #include "Keyboard/keyboard.h"
 #include "i2c_display.h"
 #include <iostream>
-#include <fcntl.h>
 #include <unistd.h>
-#include <sys/ioctl.h>
-#include <linux/i2c-dev.h>
-#include <cstring>
-#include <cerrno>
-#include <cstdlib>
 #include <chrono>
 
-// **矩阵键盘 GPIO 引脚定义**
-//const int rowPins[4] = {1, 7, 8, 11};  // 行（事件触发）
-//const int colPins[4] = {12, 16, 20, 21};  // 列（事件触发）
-
-const int rowPins[4] = {KB_R1_IO, KB_R2_IO, KB_R3_IO, KB_R4_IO};  // 行（事件触发）
-const int colPins[4] = {KB_R5_IO, KB_R6_IO, KB_R7_IO, KB_R8_IO};  // 列（事件触发）
-    
+const int rowPins[4] = {KB_R1_IO, KB_R2_IO, KB_R3_IO, KB_R4_IO};  
+const int colPins[4] = {KB_R5_IO, KB_R6_IO, KB_R7_IO, KB_R8_IO};  
 
 using namespace std;
 
@@ -28,193 +17,70 @@ Keyboard::~Keyboard() {
 
 void Keyboard::init() {
     cout << "⌨️ 初始化键盘 GPIO..." << endl;
+
+    // ✅ 1. 设置行引脚为输出，高电平
     for (int row : rowPins) {
-        auto* handler = new KeyboardEventHandler(this);
-        gpio.registerCallback(row, handler, GPIOD_LINE_EVENT_FALLING_EDGE);  // 设置下降沿
-        handlers.push_back(handler);
+        gpio.configGPIO(row, OUTPUT);
+        gpio.writeGPIO(row, 1);
     }
+
+    // ✅ 2. 设置列引脚为输入，并启用上拉，同时注册中断
     for (int col : colPins) {
-        auto* handler = new KeyboardEventHandler(this);
-        gpio.registerCallback(col, handler, GPIOD_LINE_EVENT_FALLING_EDGE);  // 设置下降沿
-        handlers.push_back(handler);
+        gpio.configGPIO(col, INPUT_PULLUP);
+        gpio.registerCallback(col, new KeyboardEventHandler(this, col));
+       
     }
 }
 
 void Keyboard::cleanup() {
     cout << "🔚 释放键盘 GPIO 资源" << endl;
-    for (auto* handler : handlers) {
-        delete handler;
-    }
-    handlers.clear();
 }
 
 void Keyboard::processKeyPress(int row, int col) {
     cout << "🔘 按键: " << keyMap[row][col] << endl;
 }
 
-KeyboardEventHandler::KeyboardEventHandler(Keyboard* parent) : parent(parent) {}
+KeyboardEventHandler::KeyboardEventHandler(Keyboard* parent, int pin)
+    : parent(parent), associatedPin(pin) {}
 
 void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
-    static bool keyDetected = false;
     static auto lastPressTime = chrono::steady_clock::now();
-    
-   
-    int pin_number = -1;  // ✅ 直接获取 GPIO 事件的 pin 编号
 
-    if (pin_number == -1) return;  // 没解析到引脚，直接返回
-        
-    std::cout << "🔍 触发 GPIO 事件，pin_number: " << pin_number << std::endl;
-    int rowIndex = -1, colIndex = -1;
-   
-    // 检测行
-    for (int i = 0; i < 4; i++) {
-        if (rowPins[i] == pin_number) {
-           rowIndex = i;
-            break;
-        }
-    }
+    int pin = associatedPin;
+    cout << "🔍 触发 GPIO 事件，pin: " << pin << endl;
 
-    // 检测列
+    int colIndex = -1;
     for (int i = 0; i < 4; i++) {
-        if (colPins[i] == pin_number) {    
+        if (colPins[i] == pin) {
             colIndex = i;
             break;
         }
     }
+    if (colIndex == -1) return;
 
-    if (rowIndex == -1 || colIndex == -1) {  
-        std::cerr << "⚠️ 无效的按键 GPIO: " << pin_number << std::endl;
-        return;
-    }
-    // 行列触发后确认按键
-    if (rowIndex == -1 || colIndex == -1) return; //{//&& !keyDetected) {
-        auto now = chrono::steady_clock::now();
-        if (chrono::duration_cast<chrono::milliseconds>(now - lastPressTime).count() > 50) { // 去抖
-          //  td::cout << "✅ 按键解析成功: " << keyMap[rowIndex][colIndex] << std::endl;
-            parent->processKeyPress(rowIndex, colIndex);
-            keyDetected = true;
-            lastPressTime = now;
-        }   
-  //  }
+    int rowIndex = -1;
+    for (int i = 0; i < 4; i++) {
+        parent->getGPIO().writeGPIO(rowPins[i], 0);  // ✅ 通过 getGPIO() 访问 gpio
+      ////  usleep(10000);
 
-    // 按键松开时重置状态
-    if (event.event_type == GPIOD_LINE_EVENT_FALLING_EDGE) {  //else
-        keyDetected = false;
-
-
-      //  if (event.event_type == GPIOD_LINE_EVENT_FALLING_EDGE) {
-     //   std::cout << "🔄 按键释放: " << keyMap[rowIndex][colIndex] << std::endl;
-
-        //void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
-   // std::cout << "🔘 按键被按下: 5" << std::endl;
-
-#include <gpiod.h>
-#include <iostream>
-
-void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
-    struct gpiod_line *line = gpiod_line_request_get_lines(event);
-    if (!line) {
-        std::cerr << "❌ 无法获取 GPIO 触发引脚!" << std::endl;
-        return;
-    }
-
-   // int pin_number = gpiod_line_offset(line);  // 获取 GPIO 引脚编号
- //   std::cout << "🔍 触发 GPIO 事件, pin: " << pin_number << std::endl;
-//}
-
-
-#include <gpiod.h>
-#include <iostream>
-#include <fcntl.h>
-
-void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
-    int fd = gpiod_line_event_read_fd(event);
-    if (fd < 0) {
-        std::cerr << "❌ 无法读取 GPIO 事件!" << std::endl;
-        return;
-    }
-
-    std::cout << "🔍 触发 GPIO 事件, 文件描述符: " << fd << std::endl;
-}
-
-
-
-
-    void Keyboard::init() {
-    cout << "⌨️ 初始化键盘 GPIO..." << endl;
-    for (int row : rowPins) {
-        auto* handler = new KeyboardEventHandler(this);
-        gpio.registerCallback(row, handler, GPIOD_LINE_EVENT_FALLING_EDGE);  // 设置下降沿
-        handlers.push_back(handler);
-    }
-    for (int col : colPins) {
-        auto* handler = new KeyboardEventHandler(this);
-        gpio.registerCallback(col, handler, GPIOD_LINE_EVENT_FALLING_EDGE);  // 设置下降沿
-        handlers.push_back(handler);
-    }
-}
-
-
-
-/////////////
-    void Keyboard::init() {
-    cout << "⌨️ 初始化键盘 GPIO..." << endl;
-    
-    for (int row : rowPins) {
-        auto* handler = new KeyboardEventHandler(this);
-        gpio.registerCallback(row, handler, GPIOD_LINE_EVENT_FALLING_EDGE);  // ✅ 确保 registerCallback 存在
-
-        // ✅ 获取 GPIO 线路
-        struct gpiod_line *line = gpiod_chip_get_line(gpio.getChip(), row);
-        if (!line) {
-            cerr << "❌ 无法获取 GPIO 线路: " << row << endl;
-            continue;
+        if (parent->getGPIO().readGPIO(pin) == 0) {  // ✅ 通过 getGPIO() 访问 gpio
+            rowIndex = i;
         }
 
-        // ✅ 设置为输入 + 内部上拉
-        struct gpiod_line_request_config config = {};
-        config.consumer = "keyboard";
-        config.request_type = GPIOD_LINE_REQUEST_DIRECTION_INPUT;
-        config.flags = GPIOD_LINE_REQUEST_FLAG_BIAS_PULL_UP;
-        if (gpiod_line_request(line, &config, 0) < 0) {
-            cerr << "❌ 无法请求 GPIO 线路: " << row << endl;
-        }
-
-        handlers.push_back(handler);
+        parent->getGPIO().writeGPIO(rowPins[i], 1);  // ✅ 通过 getGPIO() 访问 gpio
     }
 
-    for (int col : colPins) {
-        auto* handler = new KeyboardEventHandler(this);
-        gpio.registerCallback(col, handler, GPIOD_LINE_EVENT_FALLING_EDGE);  // ✅ 确保 registerCallback 存在
-
-        // ✅ 获取 GPIO 线路
-        struct gpiod_line *line = gpiod_chip_get_line(gpio.getChip(), col);
-        if (!line) {
-            cerr << "❌ 无法获取 GPIO 线路: " << col << endl;
-            continue;
-        }
-
-        // ✅ 设置为输入模式（列不需要上拉）
-        struct gpiod_line_request_config config = {};
-        config.consumer = "keyboard";
-        config.request_type = GPIOD_LINE_REQUEST_DIRECTION_INPUT;
-        if (gpiod_line_request(line, &config, 0) < 0) {
-            cerr << "❌ 无法请求 GPIO 线路: " << col << endl;
-        }
-
-        handlers.push_back(handler);
-    }
-}
-
-    /////////////////////////////////////
-
-
-    strace -e poll,read ./keyboard_app
-
-sudo gpiodetect          # 查看可用 GPIO 芯片
-sudo gpioinfo gpiochip0  # 列出所有 GPIO 状态
-sudo gpiomon -r -n 10 --num-events=20 gpiochip0 1 7 8 11 12 16 20 21  # 监测按键变化
+    auto now = chrono::steady_clock::now();
+    if (rowIndex != -1 && colIndex != -1 &&
+        chrono::duration_cast<chrono::milliseconds>(now - lastPressTime).count() > 50) {
         
-//}
+        cout << "✅ 按键解析成功: " << keyMap[rowIndex][colIndex] << endl;
+        parent->processKeyPress(rowIndex, colIndex);
+        lastPressTime = now;
+    }
+
+    if (event.event_type == GPIOD_LINE_EVENT_FALLING_EDGE) {
+        cout << "✅ 按键释放: " << keyMap[rowIndex][colIndex] << endl;
     }
 }
+
