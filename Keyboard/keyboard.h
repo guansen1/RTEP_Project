@@ -9,7 +9,8 @@ void initKeyboard(GPIO& gpio);
 
 // **释放键盘 GPIO**
 void cleanupKeyboard();
-// **键盘监听循环（✅ 新增）**
+
+// **键盘监听循环**
 void keyboardLoop();
 
 // **键盘事件回调**
