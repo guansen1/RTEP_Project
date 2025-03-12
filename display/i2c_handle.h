@@ -22,6 +22,9 @@ private:
     enum class DisplayState { SAFE, INVASION };
     DisplayState state;
     std::string inputBuffer; // 新增：保存输入的密码
+    float lastTemp;
+    float lastHumidity;
+
 };
 
 #endif // I2C_HANDLE_H

@@ -266,12 +266,6 @@ void I2cDisplay::displayMultiLine(const std::string &line1, const std::string &l
     sendBuffer(buffer, sizeof(buffer));
 }
 
-// 显示 "INVASION"
-void I2cDisplay::displayIntrusion() {
-    displayText("INVASION");
-    std::cout << "[DISPLAY] INVASION" << std::endl;
-    if (eventCallback) eventCallback("INVASION");
-}
 
 // 显示 "INVASION" 改为显示两行文字：
 // 页0：显示 "INVASION"

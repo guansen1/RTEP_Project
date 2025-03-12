@@ -30,7 +30,7 @@ include_directories(
 
 # 添加可执行文件
 add_executable(alarm_system 
-    main.cpp 
+    test.cpp 
     gpio/gpio.cpp 
     dht/dht.cpp 
     pir/pir.cpp 
