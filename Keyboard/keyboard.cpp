@@ -1,7 +1,6 @@
-#include "Keyboard/keyboard.h"
+#include "keyboard.h"
 #include <iostream>
 #include <chrono>
-#include <gpio/gpio.h>
 
 using namespace std;
 
@@ -15,7 +14,8 @@ const char keyMap[4][4] = {
     {'7', '8', '9', 'C'},
     {'*', '0', '#', 'D'}
 };
-// ✅ 监听键盘输入
+
+// **监听键盘输入**
 void keyboardLoop() {
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -50,27 +50,20 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
     static bool keyDetected = false;
     static auto lastPressTime = chrono::steady_clock::now();
 
-    // **注册行列引脚事件**
-    for (int row : rowPins) {
-        gpio.registerCallback(row, new KeyboardEventHandler());
-    }
-    for (int col : colPins) {
-        gpio.registerCallback(col, new KeyboardEventHandler());
-    }
-}
-
-  bool isRow = false, isCol = false;
+    int pin = event.source.offset;  // ✅ 适用于 `libgpiod 2.x`
+    bool isRow = false, isCol = false;
 
     // **检测是否是行事件**
-    for (int i = 0; i < 4 ; i++) {
+    for (int i = 0; i < 4; i++) {
         if (rowPins[i] == pin) {
             activeRow = i;
             isRow = true;
             break;
         }
     }
+
     // **检测是否是列事件**
-    for (int i = 0; i < 4 ; i++) {
+    for (int i = 0; i < 4; i++) {
         if (colPins[i] == pin) {
             activeCol = i;
             isCol = true;
@@ -94,4 +87,4 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
         activeRow = -1;
         activeCol = -1;
     }
-//}
+}
