@@ -138,6 +138,23 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
 }
 
 
+
+
+    void Keyboard::init() {
+    cout << "⌨️ 初始化键盘 GPIO..." << endl;
+    for (int row : rowPins) {
+        auto* handler = new KeyboardEventHandler(this);
+        gpio.registerCallback(row, handler, GPIOD_LINE_EVENT_FALLING_EDGE);  // 设置下降沿
+        handlers.push_back(handler);
+    }
+    for (int col : colPins) {
+        auto* handler = new KeyboardEventHandler(this);
+        gpio.registerCallback(col, handler, GPIOD_LINE_EVENT_FALLING_EDGE);  // 设置下降沿
+        handlers.push_back(handler);
+    }
+}
+
+
     
 
 
