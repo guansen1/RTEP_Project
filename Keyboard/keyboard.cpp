@@ -44,16 +44,61 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
     int rowIndex = -1, colIndex = -1;
 
 
- // 调试输出，检查 `event.line_offset`
-//    std::cout << "🔍 处理 GPIO 事件，offset: " << event.line_offset << std::endl;
+oid KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
+    static bool keyDetected = false;
+    static auto lastPressTime = chrono::steady_clock::now();
 
-//    if (event.line_offset < 0) {  // **防止访问无效 GPIO**
-//        std::cerr << "❌ 无效的 GPIO 事件 offset: " << event.line_offset << std::endl;
-//        return;
+    // 🚀 使用 `gpio_pins` 查找 GPIO 编号，替代 `event.line_offset`
+    int pin_number = -1;
+
+    for (const auto& pin : parent->gpio.gpio_pins) {  // 遍历已注册的 GPIO
+        if (pin.second == event.line_offset) {  
+            pin_number = pin.first;  
+            break;
+        }
+    }
+
+    if (pin_number == -1) {
+        std::cerr << "❌ 无法确定 GPIO 事件的 pin_number！" << std::endl;
+        return;
+    }
+
+    std::cout << "🔍 处理 GPIO 事件，pin: " << pin_number << std::endl;
+
+    int rowIndex = -1, colIndex = -1;
+
+    // 识别行号
+    for (int i = 0; i < 4; i++) {
+        if (rowPins[i] == pin_number) {
+            rowIndex = i;
+            break;
+        }
+    }
+
+    // 识别列号
+    for (int i = 0; i < 4; i++) {
+        if (colPins[i] == pin_number) {
+            colIndex = i;
+            break;
+        }
+    }
+
+    if (rowIndex == -1 || colIndex == -1) {
+        std::cerr << "⚠️ 无效的按键 GPIO: " << pin_number << std::endl;
+        return;
+    }
+
+    auto now = chrono::steady_clock::now();
+    if (event.event_type == GPIOD_LINE_EVENT_RISING_EDGE && !keyDetected) {  
+        if (chrono::duration_cast<chrono::milliseconds>(now - lastPressTime).count() > 50) {  
+            parent->processKeyPress(rowIndex, colIndex);
+            keyDetected = true;
+            lastPressTime = now;
+        }
+ //   } else if (event.event_type == GPIOD_LINE_EVENT_FALLING_EDGE) {  
+//        keyDetected = false;
 //    }
-
-//    int pin = event.line_offset;  // **使用 event.line_offset**
-//    int rowIndex = -1, colIndex = -1;
+//}
 
 
     
