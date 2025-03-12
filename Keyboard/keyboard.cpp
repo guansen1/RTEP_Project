@@ -100,5 +100,9 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
     // 按键松开时重置状态
     if (event.event_type == GPIOD_LINE_EVENT_FALLING_EDGE) {  //else
         keyDetected = false;
+
+
+      //  if (event.event_type == GPIOD_LINE_EVENT_FALLING_EDGE) {
+     //   std::cout << "🔄 按键释放: " << keyMap[rowIndex][colIndex] << std::endl;
     }
 }
