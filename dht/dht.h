@@ -1,7 +1,7 @@
 // dht.h
 #ifndef DHT_H
 #define DHT_H
-
+#include <sys/timerfd.h>
 #include "gpio/gpio.h"
 #include <functional>
 #include <thread>

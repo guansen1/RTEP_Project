@@ -25,6 +25,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/gpio  # 确保包含 gpio 目录
     ${CMAKE_SOURCE_DIR}/pir
     ${CMAKE_SOURCE_DIR}/display
+    ${CMAKE_SOURCE_DIR}/buzzer
 )
 
 
@@ -36,6 +37,7 @@ add_executable(alarm_system
     pir/pir.cpp 
     display/i2c_display.cpp
     display/i2c_handle.cpp
+    buzzer/buzzer.cpp
 )
 
 # 链接库

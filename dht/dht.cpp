@@ -2,7 +2,7 @@
 #include "dht.h"
 #include <chrono>
 #include <iostream>
-#include <sys/timerfd.h>
+
 #include <unistd.h>
 #include <string.h>
 
@@ -19,7 +19,7 @@ void DHT11::start() {
     // 创建定时器文件描述符
     timerfd = timerfd_create(CLOCK_MONOTONIC, 0);
     if (timerfd == -1) {
-        std::cerr << "创建定时器失败: " << strerror(errno) << std::endl;
+        std::cerr << "Failed to create timerfd: " << strerror(errno) << std::endl;
         return;
     }
     
@@ -31,7 +31,7 @@ void DHT11::start() {
     its.it_interval.tv_nsec = 0;
     
     if (timerfd_settime(timerfd, 0, &its, NULL) == -1) {
-        std::cerr << "设置定时器失败: " << strerror(errno) << std::endl;
+        std::cerr << "Failed to set timerfd: " << strerror(errno) << std::endl;
         close(timerfd);
         timerfd = -1;
         return;
