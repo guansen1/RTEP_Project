@@ -1,17 +1,18 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
+
+
+#include "gpiod.h"
 #include "gpio/gpio.h"
 #include <iostream>
 #include <chrono>
 #include <vector>
 
 // **矩阵键盘 GPIO 引脚定义**
-//const int rowPins[4] = {1, 7, 8, 11};  // 行（事件触发）
-//const int colPins[4] = {12, 16, 20, 21};  // 列（事件触发）
 
-extern const int rowPins[4] // = {1, 7, 8, 11};  // 行（事件触发）
-extern const int colPins[4] // = {12, 16, 20, 21};  // 列（事件触发）
+    extern const int rowPins[4]; //= {KB_R1_IO,KB_R2_IO,KB_R3_IO,KB_R4_IO};  // 行（事件触发）
+    extern const int colPins[4]; //= {KB_R5_IO,KB_R6_IO,KB_R7_IO,KB_R8_IO};  // 列（事件触发）
 
 const char keyMap[4][4] = {
     {'1', '2', '3', 'A'},
@@ -40,13 +41,16 @@ public:
     void init();
     void cleanup();
     void processKeyPress(int row, int col);
-
+    
 private:
     GPIO& gpio;
     std::vector<KeyboardEventHandler*> handlers;
     int activeRow = -1, activeCol = -1;
     bool keyDetected = false;
     std::chrono::steady_clock::time_point lastPressTime;
+  //  const int rowPins[4] = {KB_R1_IO,KB_R2_IO,KB_R3_IO,KB_R4_IO};  // 行（事件触发）
+  //  const int colPins[4] = {KB_R5_IO,KB_R6_IO,KB_R7_IO,KB_R8_IO};  // 列（事件触发）
+    
 };
 
 #endif // KEYBOARD_H
