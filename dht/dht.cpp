@@ -19,7 +19,7 @@ void DHT11::start() {
     // create timerfd
     timerfd = timerfd_create(CLOCK_MONOTONIC, 0);
     if (timerfd == -1) {
-        std::cerr << "创建定时器失败: " << strerror(errno) << std::endl;
+        std::cerr << "set timer failed: " << strerror(errno) << std::endl;
         return;
     }
     
@@ -136,20 +136,16 @@ bool DHT11::checkResponse() {
     auto start = std::chrono::steady_clock::now();
     while (gpio.readGPIO(DHT_IO) == 1) {
         if (std::chrono::steady_clock::now() - start > std::chrono::microseconds(100)) {
-            std::cerr << "DHT pull down failed " << std::endl;
             return false;  // timeout
         }
     }
-    std::cout << "DHT pull down finished " << std::endl;
     //wait pull up rsp 40~80us
     start = std::chrono::steady_clock::now();
     while (gpio.readGPIO(DHT_IO) == 0) {
         if (std::chrono::steady_clock::now() - start > std::chrono::microseconds(100)) {
-            std::cerr << "DHT pull up failed " << std::endl;
             return false;  // timeout
         }
     }
-    std::cout << "DHT pull up finished " << std::endl;
     return true;
 }
 
