@@ -123,6 +123,24 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
 //}
 
 
+#include <gpiod.h>
+#include <iostream>
+#include <fcntl.h>
+
+void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
+    int fd = gpiod_line_event_read_fd(event);
+    if (fd < 0) {
+        std::cerr << "❌ 无法读取 GPIO 事件!" << std::endl;
+        return;
+    }
+
+    std::cout << "🔍 触发 GPIO 事件, 文件描述符: " << fd << std::endl;
+}
+
+
+    
+
+
         
 //}
     }
