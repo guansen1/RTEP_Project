@@ -32,6 +32,14 @@ public:
     // 在页0显示 "SAFE"，在页2显示温度，在页4显示湿度
     void displaySafeAndDHT(const std::string &tempStr, const std::string &humStr);
 
+    // 显示错误提示信息：例如“Wrong password, please try again.”
+    void displayWrongPassword();
+
+    // 显示密码输入反馈（显示由 '*' 组成的字符串），例如在页6显示
+    void displayPasswordStars(const std::string &stars);
+
+
+
     // 注册事件回调（选填，用于调试或联动）
     void registerEventCallback(std::function<void(const std::string&)> callback);
 

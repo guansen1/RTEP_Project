@@ -273,12 +273,20 @@ void I2cDisplay::displayIntrusion() {
     if (eventCallback) eventCallback("INVASION");
 }
 
-// 显示 "SAFE"
-void I2cDisplay::displaySafe() {
-    displayText("SAFE");
-    std::cout << "[DISPLAY] SAFE" << std::endl;
-    if (eventCallback) eventCallback("SAFE");
+// 显示 "INVASION" 改为显示两行文字：
+// 页0：显示 "INVASION"
+// 页2：显示 "Enter password"
+// 页4：显示 "to unlock"
+void I2cDisplay::displayIntrusion() {
+    clearBuffer();
+    displayTextAt(0, "INVASION");
+    displayTextAt(2, "Enter password");
+    displayTextAt(4, "to unlock");
+    sendBuffer(buffer, sizeof(buffer));
+    std::cout << "[DISPLAY] INVASION" << std::endl;
+    if (eventCallback) eventCallback("INVASION");
 }
+
 
 // 显示 SAFE 与温湿度数据：在页0显示 "SAFE"，页2显示温度，页4显示湿度
 void I2cDisplay::displaySafeAndDHT(const std::string &tempStr, const std::string &humStr) {
@@ -287,6 +295,23 @@ void I2cDisplay::displaySafeAndDHT(const std::string &tempStr, const std::string
     displayTextAt(2, tempStr);
     displayTextAt(4, humStr);
     sendBuffer(buffer, sizeof(buffer));
+}
+
+void I2cDisplay::displayWrongPassword() {
+    clearBuffer();
+    // 这里假设在页0显示第一行文字，页2显示第二行文字
+    displayTextAt(0, "Wrong password,");
+    displayTextAt(2, "please try again");
+    sendBuffer(buffer, sizeof(buffer));
+    std::cout << "[DISPLAY] Wrong password, please try again." << std::endl;
+}
+
+void I2cDisplay::displayPasswordStars(const std::string &stars) {
+    clearBuffer();
+    // 这里假设我们在页6显示输入的密码反馈
+    displayTextAt(6, stars);
+    sendBuffer(buffer, sizeof(buffer));
+    std::cout << "[DISPLAY] Password input: " << stars << std::endl;
 }
 
 void I2cDisplay::registerEventCallback(std::function<void(const std::string&)> callback) {
