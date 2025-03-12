@@ -211,7 +211,9 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
 
     strace -e poll,read ./keyboard_app
 
-
+sudo gpiodetect          # 查看可用 GPIO 芯片
+sudo gpioinfo gpiochip0  # 列出所有 GPIO 状态
+sudo gpiomon -r -n 10 --num-events=20 gpiochip0 1 7 8 11 12 16 20 21  # 监测按键变化
         
 //}
     }
