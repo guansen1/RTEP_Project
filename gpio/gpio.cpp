@@ -21,7 +21,17 @@ void GPIO::gpio_init() {
     configGPIO(PIR_IO, BOTH_EDGES);
     configGPIO(BUZZER_IO, OUTPUT);
     configGPIO(DHT_IO, OUTPUT);
+    configGPIO(KB_R1_IO, FALLING_EDGE);
+    configGPIO(KB_R2_IO, FALLING_EDGE);
+    configGPIO(KB_R3_IO, FALLING_EDGE);
+    configGPIO(KB_R4_IO, FALLING_EDGE);
+    configGPIO(KB_R5_IO, RISING_EDGE);
+    configGPIO(KB_R6_IO, RISING_EDGE);
+    configGPIO(KB_R7_IO, RISING_EDGE);
+    configGPIO(KB_R8_IO, RISING_EDGE);
+    
 }
+
 
 bool GPIO::configGPIO(int pin_number, int config_num) {
     
