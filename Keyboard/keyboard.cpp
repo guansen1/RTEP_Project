@@ -1,90 +1,76 @@
 #include "keyboard.h"
-#include <iostream>
-#include <chrono>
 
 using namespace std;
 
-// **矩阵键盘 GPIO 引脚定义**
-const int rowPins[4] = {1, 7, 8, 11};  // 行（事件触发）
-const int colPins[4] = {12, 16, 20, 21};  // 列（事件触发）
+Keyboard::Keyboard(GPIO& gpio) : gpio(gpio) {}
 
-const char keyMap[4][4] = {
-    {'1', '2', '3', 'A'},
-    {'4', '5', '6', 'B'},
-    {'7', '8', '9', 'C'},
-    {'*', '0', '#', 'D'}
-};
-
-// **监听键盘输入**
-void keyboardLoop() {
-    while (true) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
+Keyboard::~Keyboard() {
+    cleanup();
 }
 
-// **初始化键盘**
-void initKeyboard(GPIO& gpio) {
+void Keyboard::init() {
     cout << "⌨️ 初始化键盘 GPIO..." << endl;
-
-    // **注册行列引脚事件**
     for (int row : rowPins) {
-        gpio.registerCallback(row, new KeyboardEventHandler());
+        auto* handler = new KeyboardEventHandler(this);
+        gpio.registerCallback(row, handler);
+        handlers.push_back(handler);
     }
     for (int col : colPins) {
-        gpio.registerCallback(col, new KeyboardEventHandler());
+        auto* handler = new KeyboardEventHandler(this);
+        gpio.registerCallback(col, handler);
+        handlers.push_back(handler);
     }
 }
 
-// **释放资源**
-void cleanupKeyboard() {
+void Keyboard::cleanup() {
     cout << "🔚 释放键盘 GPIO 资源" << endl;
+    for (auto* handler : handlers) {
+        delete handler;
+    }
+    handlers.clear();
 }
 
-// **键盘事件处理类**
-KeyboardEventHandler::KeyboardEventHandler() : input_buffer("") {}
+void Keyboard::processKeyPress(int row, int col) {
+    cout << "🔘 按键: " << keyMap[row][col] << endl;
+}
 
-KeyboardEventHandler::~KeyboardEventHandler() {}
+KeyboardEventHandler::KeyboardEventHandler(Keyboard* parent) : parent(parent) {}
 
 void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
-    static int activeRow = -1, activeCol = -1;
     static bool keyDetected = false;
     static auto lastPressTime = chrono::steady_clock::now();
 
-    int pin = event.source.offset;  // ✅ 适用于 `libgpiod 2.x`
-    bool isRow = false, isCol = false;
+    int pin = event.source.offset;
+    int rowIndex = -1, colIndex = -1;
 
-    // **检测是否是行事件**
+    // 检测行
     for (int i = 0; i < 4; i++) {
         if (rowPins[i] == pin) {
-            activeRow = i;
-            isRow = true;
+            rowIndex = i;
             break;
         }
     }
 
-    // **检测是否是列事件**
+    // 检测列
     for (int i = 0; i < 4; i++) {
         if (colPins[i] == pin) {
-            activeCol = i;
-            isCol = true;
+            colIndex = i;
             break;
         }
     }
 
-    // **行列都触发后再确认按键**
-    if (activeRow != -1 && activeCol != -1 && !keyDetected) {
+    // 行列触发后确认按键
+    if (rowIndex != -1 && colIndex != -1 && !keyDetected) {
         auto now = chrono::steady_clock::now();
         if (chrono::duration_cast<chrono::milliseconds>(now - lastPressTime).count() > 50) { // 去抖
-            cout << "🔘 按键: " << keyMap[activeRow][activeCol] << endl;
-            keyDetected = true; // 标记已经识别，避免重复输出
+            parent->processKeyPress(rowIndex, colIndex);
+            keyDetected = true;
             lastPressTime = now;
         }
     }
 
-    // **按键松开时重置状态**
+    // 按键松开时重置状态
     if (event.event_type == GPIOD_LINE_EVENT_FALLING_EDGE) {
         keyDetected = false;
-        activeRow = -1;
-        activeCol = -1;
     }
 }
