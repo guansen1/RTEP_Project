@@ -104,5 +104,9 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
 
       //  if (event.event_type == GPIOD_LINE_EVENT_FALLING_EDGE) {
      //   std::cout << "🔄 按键释放: " << keyMap[rowIndex][colIndex] << std::endl;
+
+        //void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
+   // std::cout << "🔘 按键被按下: 5" << std::endl;
+//}
     }
 }
