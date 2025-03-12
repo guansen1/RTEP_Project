@@ -14,8 +14,8 @@
 //const int rowPins[4] = {1, 7, 8, 11};  // 行（事件触发）
 //const int colPins[4] = {12, 16, 20, 21};  // 列（事件触发）
 
-    const int rowPins[4] = {KB_R1_IO, KB_R2_IO, KB_R3_IO, KB_R4_IO};  // 行（事件触发）
-    const int colPins[4] = {KB_R5_IO, KB_R6_IO, KB_R7_IO, KB_R8_IO};  // 列（事件触发）
+const int rowPins[4] = {KB_R1_IO, KB_R2_IO, KB_R3_IO, KB_R4_IO};  // 行（事件触发）
+const int colPins[4] = {KB_R5_IO, KB_R6_IO, KB_R7_IO, KB_R8_IO};  // 列（事件触发）
     
 
 using namespace std;
@@ -58,9 +58,11 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
     static bool keyDetected = false;
     static auto lastPressTime = chrono::steady_clock::now();
 
-    int pin_number = event.line;          /////////////////////////////////
+    int pin_number = event.event_type;          /////////////////////////////////
     int rowIndex = -1, colIndex = -1;
-    
+
+ //   int pin_number = -1;  // 🚀 变量存储 GPIO 事件的 pin 编号
+        
     // 检测行
     for (int i = 0; i < 4; i++) {
         if (rowPins[i] == pin_number) {
