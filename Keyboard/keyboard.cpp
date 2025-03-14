@@ -332,3 +332,47 @@ int main() {
     std::cout << "退出程序。" << std::endl;
     return 0;
 }
+
+
+///////////////
+
+
+home/team38/RTEP_Project-feature-keyboard/Keyboard/keyboard.cpp: In member function ‘void Keyboard::init()’:
+/home/team38/RTEP_Project-feature-keyboard/Keyboard/keyboard.cpp:37:29: error: no matching function for call to ‘GPIO::configGPIO(int&, GPIOconfig, <unnamed enum>)’
+   37 |         if (!gpio.configGPIO(col, FALLING_EDGE, GPIOD_LINE_REQUEST_FLAG_BIAS_PULL_UP)) {
+      |              ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/team38/RTEP_Project-feature-keyboard/Keyboard/keyboard.h:5,
+                 from /home/team38/RTEP_Project-feature-keyboard/Keyboard/keyboard.cpp:1:
+/home/team38/RTEP_Project-feature-keyboard/gpio/gpio.h:47:10: note: candidate: ‘bool GPIO::configGPIO(int, int)’
+   47 |     bool configGPIO(int pin_number, int config_num);
+      |          ^~~~~~~~~~
+/home/team38/RTEP_Project-feature-keyboard/gpio/gpio.h:47:10: note:   candidate expects 2 arguments, 3 provided
+/home/team38/RTEP_Project-feature-keyboard/Keyboard/keyboard.cpp: At global scope:
+/home/team38/RTEP_Project-feature-keyboard/Keyboard/keyboard.cpp:58:6: error: no declaration matches ‘void Keyboard::processKeyPress(int, int)’
+   58 | void Keyboard::processKeyPress(int row, int col) {
+      |      ^~~~~~~~
+/home/team38/RTEP_Project-feature-keyboard/Keyboard/keyboard.h:48:35: note: candidate is: ‘std::function<void(int, int)> Keyboard::processKeyPress’
+   48 |     std::function<void(int, int)> processKeyPress = [this](int row, int col) {
+      |                                   ^~~~~~~~~~~~~~~
+/home/team38/RTEP_Project-feature-keyboard/Keyboard/keyboard.h:39:7: note: ‘class Keyboard’ defined here
+   39 | class Keyboard {
+      |       ^~~~~~~~
+/home/team38/RTEP_Project-feature-keyboard/Keyboard/keyboard.cpp: In member function ‘virtual void KeyboardEventHandler::handleEvent(const gpiod_line_event&)’:
+/home/team38/RTEP_Project-feature-keyboard/Keyboard/keyboard.cpp:71:37: error: ‘const struct gpiod_line_event’ has no member named ‘line’
+   71 |     struct gpiod_line* line = event.line;
+      |                                     ^~~~
+/home/team38/RTEP_Project-feature-keyboard/Keyboard/keyboard.cpp:72:22: error: ‘gpiod_line_get_offset’ was not declared in this scope; did you mean ‘gpiod_line_offset’?
+   72 |     int pin_number = gpiod_line_get_offset(line);
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+      |                      gpiod_line_offset
+/home/team38/RTEP_Project-feature-keyboard/Keyboard/keyboard.cpp:82:9: error: ‘gpio’ was not declared in this scope
+   82 |     if (gpio.readGPIO(associatedPin) != 0) {
+      |         ^~~~
+/home/team38/RTEP_Project-feature-keyboard/Keyboard/keyboard.cpp:102:9: error: ‘gpio’ was not declared in this scope
+  102 |         gpio.writeGPIO(rowPins[row], 1);
+      |         ^~~~
+make[2]: *** [CMakeFiles/alarm_system.dir/build.make:160: CMakeFiles/alarm_system.dir/Keyboard/keyboard.cpp.o] Error 1
+make[1]: *** [CMakeFiles/Makefile2:83: CMakeFiles/alarm_system.dir/all] Error 2
+make: *** [Makefile:91: all] Error 2
+team38@raspberrypi:~/RTEP_Project-feature-keyboard/build $ 
+
