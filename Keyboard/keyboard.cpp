@@ -1,13 +1,11 @@
 #include "Keyboard/keyboard.h"
-#include "i2c_display.h"
 #include <iostream>
-#include <unistd.h>
 #include <chrono>
+#include <thread>
 
-const int rowPins[4] = {KB_R1_IO, KB_R2_IO, KB_R3_IO, KB_R4_IO};  
-const int colPins[4] = {KB_R5_IO, KB_R6_IO, KB_R7_IO, KB_R8_IO};  
-
-using namespace std;
+// 矩阵键盘 GPIO 引脚定义（根据你的硬件调整）
+const int rowPins[4] = {KB_R1_IO, KB_R2_IO, KB_R3_IO, KB_R4_IO}; // 行引脚
+const int colPins[4] = {KB_R5_IO, KB_R6_IO, KB_R7_IO, KB_R8_IO}; // 列引脚
 
 Keyboard::Keyboard(GPIO& gpio) : gpio(gpio) {}
 
@@ -16,71 +14,73 @@ Keyboard::~Keyboard() {
 }
 
 void Keyboard::init() {
-    cout << "⌨️ 初始化键盘 GPIO..." << endl;
-
-    // ✅ 1. 设置行引脚为输出，高电平
+    std::cout << "⌨️ 初始化键盘 GPIO..." << std::endl;
+    
+    // 设置行引脚为输出，初始低电平
     for (int row : rowPins) {
-        gpio.configGPIO(row, OUTPUT);
-        gpio.writeGPIO(row, 1);
+        gpio.setDirection(row, OUTPUT);
+        gpio.write(row, LOW);
     }
-
-    // ✅ 2. 设置列引脚为输入，并启用上拉，同时注册中断
+    
+    // 设置列引脚为输入，上拉电阻，并注册下降沿事件
     for (int col : colPins) {
-        gpio.configGPIO(col, INPUT_PULLUP);
-        gpio.registerCallback(col, new KeyboardEventHandler(this, col));
-       
+        gpio.setDirection(col, INPUT);
+        gpio.setPullUpDown(col, PULL_UP);
+        auto* handler = new KeyboardEventHandler(this, col);
+        handlers.push_back(handler);
+        gpio.registerCallback(col, handler, GPIOD_LINE_EVENT_FALLING_EDGE);
     }
 }
 
 void Keyboard::cleanup() {
-    cout << "🔚 释放键盘 GPIO 资源" << endl;
+    std::cout << "🔚 释放键盘 GPIO 资源" << std::endl;
+    for (auto* handler : handlers) {
+        delete handler;
+    }
+    handlers.clear();
+}
+
+void Keyboard::scanRowsAndProcess(int colIndex) {
+    // 去抖：等待20ms确认按键稳定
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    if (gpio.read(colPins[colIndex]) == HIGH) {
+        return; // 按键已释放，退出
+    }
+
+    // 扫描所有行
+    for (int row = 0; row < 4; row++) {
+        gpio.write(rowPins[row], HIGH); // 将当前行置高
+        std::this_thread::sleep_for(std::chrono::microseconds(10)); // 短暂延迟
+        if (gpio.read(colPins[colIndex]) == LOW) { // 检查列是否仍为低
+            char key = keyMap[row][colIndex];
+            std::cout << "🔘 检测到按键: " << key << std::endl;
+            processKeyPress(row, colIndex);
+        }
+        gpio.write(rowPins[row], LOW); // 恢复低电平
+    }
 }
 
 void Keyboard::processKeyPress(int row, int col) {
-    cout << "🔘 按键: " << keyMap[row][col] << endl;
+    std::cout << "🔘 按键: " << keyMap[row][col] << std::endl;
+    // 在此添加密码处理逻辑，例如：
+    // if (keyMap[row][col] == '#') { /* 验证密码 */ }
 }
 
-KeyboardEventHandler::KeyboardEventHandler(Keyboard* parent, int pin)
+KeyboardEventHandler::KeyboardEventHandler(Keyboard* parent, int pin) 
     : parent(parent), associatedPin(pin) {}
 
 void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
-    static auto lastPressTime = chrono::steady_clock::now();
-
-    int pin = associatedPin;
-    cout << "🔍 触发 GPIO 事件，pin: " << pin << endl;
-
-    int colIndex = -1;
-    for (int i = 0; i < 4; i++) {
-        if (colPins[i] == pin) {
-            colIndex = i;
-            break;
-        }
-    }
-    if (colIndex == -1) return;
-
-    int rowIndex = -1;
-    for (int i = 0; i < 4; i++) {
-        parent->getGPIO().writeGPIO(rowPins[i], 0);  // ✅ 通过 getGPIO() 访问 gpio
-      ////  usleep(10000);
-
-        if (parent->getGPIO().readGPIO(pin) == 0) {  // ✅ 通过 getGPIO() 访问 gpio
-            rowIndex = i;
-        }
-
-        parent->getGPIO().writeGPIO(rowPins[i], 1);  // ✅ 通过 getGPIO() 访问 gpio
-    }
-
-    auto now = chrono::steady_clock::now();
-    if (rowIndex != -1 && colIndex != -1 &&
-        chrono::duration_cast<chrono::milliseconds>(now - lastPressTime).count() > 50) {
-        
-        cout << "✅ 按键解析成功: " << keyMap[rowIndex][colIndex] << endl;
-        parent->processKeyPress(rowIndex, colIndex);
-        lastPressTime = now;
-    }
-
     if (event.event_type == GPIOD_LINE_EVENT_FALLING_EDGE) {
-        cout << "✅ 按键释放: " << keyMap[rowIndex][colIndex] << endl;
+        int colIndex = -1;
+        for (int i = 0; i < 4; i++) {
+            if (colPins[i] == associatedPin) {
+                colIndex = i;
+                break;
+            }
+        }
+        if (colIndex != -1) {
+            std::cout << "🔍 列 " << colIndex << " 触发" << std::endl;
+            parent->scanRowsAndProcess(colIndex);
+        }
     }
 }
-
