@@ -365,3 +365,12 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
         parent->gpio.writeGPIO(rowPins[row], 0);
     }
 }
+
+
+
+///////
+class Keyboard {
+public:
+    void processKeyPress(int row, int col); // Regular member function
+    // Other declarations...
+};
