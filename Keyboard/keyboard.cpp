@@ -1171,10 +1171,288 @@ bool GPIO::readEvent(int pin_number, gpiod_line_event& event) {
 }
 
 
+////////////////////////////////////////////////////
 
 
+#ifndef KEYBOARD_H
+#define KEYBOARD_H
+
+#include "gpiod.h"
+#include "gpio/gpio.h"
+#include <iostream>
+#include <chrono>
+#include <vector>
+#include <string>
+#include <mutex>
+
+// **矩阵键盘 GPIO 引脚定义**
+extern const int rowPins[4]; // 行（事件触发）
+extern const int colPins[4]; // 列（事件触发）
+
+// 按键映射表
+const char keyMap[4][4] = {
+    {'1', '2', '3', 'A'},
+    {'4', '5', '6', 'B'},
+    {'7', '8', '9', 'C'},
+    {'*', '0', '#', 'D'}
+};
+
+class Keyboard; // 前向声明
+
+// **键盘事件处理类**
+class KeyboardEventHandler : public GPIO::GPIOEventCallbackInterface {
+public:
+    // 增加 pin 参数，用于保存当前回调关联的 GPIO 引脚编号
+    KeyboardEventHandler(class Keyboard* parent, int pin);
+    void handleEvent(const gpiod_line_event& event) override;
+
+private:
+    Keyboard* parent;
+    int associatedPin; // 保存注册时传入的 GPIO 引脚编号
+};
+
+// **键盘管理类**
+class Keyboard {
+public:
+    explicit Keyboard(GPIO& gpio);
+    ~Keyboard();
+
+    void init();
+    void cleanup();
+    
+    // 处理按键事件
+    void processKeyPress(int row, int col);
+    
+    // 处理单个按键
+    void handleKey(char key);
+    
+    // 显示密码到显示屏
+    void displayPassword();
+    
+    // 验证密码
+    bool checkPassword();
+    
+    // 外部调用接口，获取GPIO
+    GPIO& getGPIO() { return gpio; }
+
+private:
+    GPIO& gpio;
+    std::vector<KeyboardEventHandler*> handlers;
+    
+    // 密码相关
+    static const std::string correctPassword;  // 正确密码
+    std::string currentInput;                 // 当前输入
+    std::mutex inputMutex;                    // 保护输入字符串的互斥锁
+    
+    // 防抖动相关
+    std::chrono::steady_clock::time_point lastPressTime;
+    static constexpr int debounceTime = 150;  // 去抖时间（毫秒）
+};
+
+#endif // KEYBOARD_H
+
+//////////////////
 
 
+#include "Keyboard/keyboard.h"
+#include "i2c_display.h"
+#include <iostream>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <linux/i2c-dev.h>
+#include <cstring>
+#include <cerrno>
+#include <cstdlib>
+#include <chrono>
+#include <algorithm>
+
+// 矩阵键盘 GPIO 引脚定义
+const int rowPins[4] = {KB_R1_IO, KB_R2_IO, KB_R3_IO, KB_R4_IO}; // 行（事件触发）
+const int colPins[4] = {KB_R5_IO, KB_R6_IO, KB_R7_IO, KB_R8_IO}; // 列（事件触发）
+
+// 定义正确密码
+const std::string Keyboard::correctPassword = "1234#";
+
+using namespace std;
+
+// 键盘事件处理器构造函数
+KeyboardEventHandler::KeyboardEventHandler(Keyboard* parent, int pin) 
+    : parent(parent), associatedPin(pin) {}
+
+// 处理GPIO事件
+void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
+    // 检查事件是否为下降沿触发（按键按下）
+    if (event.event_type == GPIOD_LINE_EVENT_FALLING_EDGE) {
+        int pin_number = associatedPin;
+        std::cout << "🔍 触发 GPIO 事件，pin_number: " << pin_number << std::endl;
+        
+        // 确定是哪一行或哪一列被触发
+        int rowIndex = -1, colIndex = -1;
+        
+        // 检测是哪一行
+        for (int i = 0; i < 4; i++) {
+            if (rowPins[i] == pin_number) {
+                rowIndex = i;
+                break;
+            }
+        }
+        
+        // 检测是哪一列
+        for (int i = 0; i < 4; i++) {
+            if (colPins[i] == pin_number) {
+                colIndex = i;
+                break;
+            }
+        }
+        
+        // 如果行和列都有效，则处理按键
+        if (rowIndex != -1 && colIndex != -1) {
+            parent->processKeyPress(rowIndex, colIndex);
+        }
+    }
+}
+
+// 键盘类构造函数
+Keyboard::Keyboard(GPIO& gpio) : gpio(gpio), currentInput("") {}
+
+// 析构函数
+Keyboard::~Keyboard() {
+    cleanup();
+}
+
+// 初始化键盘
+void Keyboard::init() {
+    cout << "⌨️ 初始化键盘 GPIO..." << endl;
+    
+    // 初始化行和列的GPIO
+    for (int i = 0; i < 4; i++) {
+        // 设置行
+        KeyboardEventHandler* rowHandler = new KeyboardEventHandler(this, rowPins[i]);
+        gpio.registerCallback(rowPins[i], rowHandler);
+        handlers.push_back(rowHandler);
+        
+        // 设置列
+        KeyboardEventHandler* colHandler = new KeyboardEventHandler(this, colPins[i]);
+        gpio.registerCallback(colPins[i], colHandler);
+        handlers.push_back(colHandler);
+    }
+    
+    // 显示初始欢迎信息
+    I2cDisplay::getInstance().clear();
+    I2cDisplay::getInstance().drawText(0, 0, "欢迎使用", 1);
+    I2cDisplay::getInstance().drawText(0, 16, "请输入密码:", 1);
+    I2cDisplay::getInstance().display();
+    
+    cout << "⌨️ 键盘初始化完成" << endl;
+}
+
+// 清理资源
+void Keyboard::cleanup() {
+    cout << "🔚 释放键盘 GPIO 资源" << endl;
+    for (auto* handler : handlers) {
+        delete handler;
+    }
+    handlers.clear();
+}
+
+// 处理按键按下
+void Keyboard::processKeyPress(int row, int col) {
+    auto now = chrono::steady_clock::now();
+    auto elapsed = chrono::duration_cast<chrono::milliseconds>(now - lastPressTime).count();
+    
+    // 去抖动处理
+    if (elapsed > debounceTime) {
+        char key = keyMap[row][col];
+        cout << "🔘 按键: " << key << endl;
+        
+        // 处理这个按键
+        handleKey(key);
+        
+        // 更新上次按键时间
+        lastPressTime = now;
+    }
+}
+
+// 处理单个按键输入
+void Keyboard::handleKey(char key) {
+    std::lock_guard<std::mutex> lock(inputMutex);
+    
+    // 如果是 * 键，清除当前输入
+    if (key == '*') {
+        currentInput.clear();
+        cout << "🧹 清除输入" << endl;
+    }
+    // 否则，将键添加到当前输入
+    else {
+        if (currentInput.length() < 10) { // 限制输入长度
+            currentInput.push_back(key);
+        }
+    }
+    
+    // 显示当前密码
+    displayPassword();
+    
+    // 如果当前输入以 # 结尾，检查密码
+    if (key == '#') {
+        if (checkPassword()) {
+            cout << "✅ 密码正确！解锁成功" << endl;
+            
+            // 显示解锁成功的消息
+            I2cDisplay::getInstance().clear();
+            I2cDisplay::getInstance().drawText(0, 0, "密码正确", 1);
+            I2cDisplay::getInstance().drawText(0, 16, "系统已解锁", 1);
+            I2cDisplay::getInstance().display();
+            
+            // 触发解锁逻辑，这里可以添加控制继电器等
+            // 例如：gpio.writeGPIO(RELAY_PIN, 1);
+            
+            // 延时3秒后清除
+            sleep(3);
+            currentInput.clear();
+            displayPassword();
+        } else {
+            cout << "❌ 密码错误！" << endl;
+            
+            // 显示错误消息
+            I2cDisplay::getInstance().clear();
+            I2cDisplay::getInstance().drawText(0, 0, "密码错误", 1);
+            I2cDisplay::getInstance().drawText(0, 16, "请重新输入", 1);
+            I2cDisplay::getInstance().display();
+            
+            // 延时2秒后清除
+            sleep(2);
+            currentInput.clear();
+            displayPassword();
+        }
+    }
+}
+
+// 在显示屏上显示密码（用星号表示）
+void Keyboard::displayPassword() {
+    I2cDisplay::getInstance().clear();
+    I2cDisplay::getInstance().drawText(0, 0, "请输入密码:", 1);
+    
+    std::string displayText;
+    for (size_t i = 0; i < currentInput.length(); i++) {
+        displayText.push_back('*');
+    }
+    
+    // 显示用星号掩码的密码
+    I2cDisplay::getInstance().drawText(0, 16, displayText.c_str(), 1);
+    I2cDisplay::getInstance().display();
+}
+
+// 验证密码是否正确
+bool Keyboard::checkPassword() {
+    // 移除尾部的 # 符号进行比较
+    std::string inputToCheck = currentInput;
+    if (!inputToCheck.empty() && inputToCheck.back() == '#') {
+        inputToCheck.pop_back();
+    }
+    
+    return inputToCheck == correctPassword.substr(0, correctPassword.length() - 1);
+}
 
 
 
