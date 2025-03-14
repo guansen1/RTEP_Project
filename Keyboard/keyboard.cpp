@@ -84,3 +84,69 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
         }
     }
 }
+
+
+
+/////main.cpp
+
+
+
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include "gpio/gpio.h"
+#include "pir/pir.h"
+#include "dht/dht.h"
+#include "display/i2c_display.h"
+#include "i2c_handle.h"
+#include "Keyboard/keyboard.h" 
+
+int main() {
+    std::cout << "系统启动！" << std::endl;
+
+    // 初始化 I2C 显示模块（SSD1306）
+    I2cDisplay::getInstance().init();
+
+    // 初始化 GPIO 模块
+    GPIO gpio;
+    gpio.gpio_init();
+
+    // 注册 PIR 事件处理器（用于日志输出等）
+    PIREventHandler pirHandler(gpio);
+    gpio.registerCallback(PIR_IO, &pirHandler);
+
+    // 创建 I2cDisplayHandle 实例，处理 PIR 和 DHT 事件
+    I2cDisplayHandle displayHandle;
+    gpio.registerCallback(PIR_IO, &displayHandle);
+
+    // 启动 GPIO 事件监听线程
+    gpio.start();
+
+    // 初始化 DHT11 温湿度传感器，并注册回调
+    DHT11 dht11(gpio);
+    dht11.registerCallback([&displayHandle](const DHTReading &reading) {
+        displayHandle.handleDHT(reading.temp_celsius, reading.humidity);
+    });
+    dht11.start();
+    
+    // 初始化矩阵键盘
+    Keyboard keyboard(gpio);
+    keyboard.init();
+    std::cout << "🔄 矩阵键盘已启动..." << std::endl;
+    
+    // 主循环保持运行
+    while (true) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+
+    // 释放资源（因无限循环，通常不会执行到这里）
+    keyboard.cleanup();
+    gpio.stop();
+    std::cout << "退出程序。" << std::endl;
+    return 0;
+}
+
+
+////
+
+
