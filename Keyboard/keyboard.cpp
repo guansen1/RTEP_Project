@@ -431,72 +431,140 @@ void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
 /////
 
 
-#ifndef KEYBOARD_H
-#define KEYBOARD_H
-
-#include "gpiod.h"
-#include "gpio/gpio.h"
-#include <iostream>
-#include <chrono>
-#include <vector>
-#include <functional>
-
-// **矩阵键盘 GPIO 引脚定义**
-extern const int rowPins[4]; // 行（事件触发）
-extern const int colPins[4]; // 列（事件触发）
-
-// 按键映射表
-const char keyMap[4][4] = {
-    {'1', '2', '3', 'A'},
-    {'4', '5', '6', 'B'},
-    {'7', '8', '9', 'C'},
-    {'*', '0', '#', 'D'}
-};
-
-// 前向声明
-class Keyboard;
-
-// **键盘事件处理类**
-class KeyboardEventHandler : public GPIO::GPIOEventCallbackInterface {
-public:
-    // 增加 pin 参数，用于保存当前回调关联的 GPIO 引脚编号
-    KeyboardEventHandler(class Keyboard* parent, int pin);
-    void handleEvent(const gpiod_line_event& event) override;
-
-private:
-    Keyboard* parent;
-    int associatedPin; // 保存注册时传入的 GPIO 引脚编号
-};
-
-// **键盘管理类**
-class Keyboard {
-public:
-    explicit Keyboard(GPIO& gpio);
-    ~Keyboard();
-
-    void init();
-    void cleanup();
+// 在 keyboard.cpp  
+void Keyboard::init() {
+    std::cout << "⌨️ 初始化键盘 GPIO..." << std::endl;
     
-    // 使用std::function可以允许在运行时重新定义此方法
-    std::function<void(int, int)> processKeyPress = [this](int row, int col) {
-        this->defaultProcessKeyPress(row, col);
-    };
+    // 配置行为输入并使用内部上拉
+    for (int i = 0; i < 4; i++) {
+        std::cout << "配置行引脚 " << rowPins[i] << " 为下降沿触发" << std::endl;
+        if (!gpio.configGPIO(rowPins[i], INPUT_PULLUP)) {
+            std::cerr << "❌ 行引脚 " << rowPins[i] << " 配置失败！" << std::endl;
+            continue;
+        }
+        auto* handler = new KeyboardEventHandler(this, rowPins[i]);
+        if (!gpio.configGPIO(rowPins[i], FALLING_EDGE)) {
+            std::cerr << "❌ 行引脚 " << rowPins[i] << " 配置为下降沿触发失败！" << std::endl;
+            delete handler;
+            continue;
+        }
+        gpio.registerCallback(rowPins[i], handler);
+        handlers.push_back(handler);
+        std::cout << "✅ 行引脚 " << rowPins[i] << " 配置成功" << std::endl;
+    }
     
-    void defaultProcessKeyPress(int row, int col);
-
-    GPIO& getGPIO() { return gpio; } // 提供访问 GPIO 的 public 方法
-
-    // 让KeyboardEventHandler成为友元类，可以访问私有成员
-    friend class KeyboardEventHandler;
-
-private:
-    GPIO& gpio;
-    std::vector<KeyboardEventHandler*> handlers;
+    // 配置列为输入
+    for (int i = 0; i < 4; i++) {
+        std::cout << "配置列引脚 " << colPins[i] << " 为上升沿触发" << std::endl;
+        if (!gpio.configGPIO(colPins[i], INPUT)) {
+            std::cerr << "❌ 列引脚 " << colPins[i] << " 配置失败！" << std::endl;
+            continue;
+        }
+        auto* handler = new KeyboardEventHandler(this, colPins[i]);
+        if (!gpio.configGPIO(colPins[i], RISING_EDGE)) {
+            std::cerr << "❌ 列引脚 " << colPins[i] << " 配置为上升沿触发失败！" << std::endl;
+            delete handler;
+            continue;
+        }
+        gpio.registerCallback(colPins[i], handler);
+        handlers.push_back(handler);
+        std::cout << "✅ 列引脚 " << colPins[i] << " 配置成功" << std::endl;
+    }
     
-    // 当前检测到的活动行和列
-    int activeRow = -1, activeCol = -1;
-    bool keyDetected = false;
-    std::chrono::steady_clock::time_point lastPressTime;
+    std::cout << "✅ 键盘初始化完成" << std::endl;
+}
+
+// 在 KeyboardEventHandler::handleEvent 中添加更多调试信息
+void KeyboardEventHandler::handleEvent(const gpiod_line_event& event) {
+    std::cout << "键盘事件触发：引脚 " << associatedPin 
+              << (event.event_type == GPIOD_LINE_EVENT_RISING_EDGE ? " 上升沿" : " 下降沿") 
+              << " 时间戳: " << event.ts.tv_sec << "." << event.ts.tv_nsec << std::endl;
+              
+    static int lastRow = -1, lastCol = -1;
+    auto now = chrono::steady_clock::now();
+    auto timeSinceLastPress = chrono::duration_cast<chrono::milliseconds>(
+        now - parent->lastPressTime).count();
+    
+    // 消抖处理：忽略50ms内的连续触发
+    if (timeSinceLastPress < 50) {
+        std::cout << "忽略过快的连续触发（" << timeSinceLastPress << "ms）" << std::endl;
+        return;
+    }
+    
+    // 确定当前触发的是行还是列
+    int rowIndex = -1, colIndex = -1;
+    
+    // 检查是否为行引脚
+    for (int i = 0; i < 4; i++) {
+        if (rowPins[i] == associatedPin) {
+            rowIndex = i;
+            std::cout << "检测到行 " << i << " 被按下" << std::endl;
+            break;
+        }
+    }
+    
+    // 检查是否为列引脚
+    for (int i = 0; i < 4; i++) {
+        if (colPins[i] == associatedPin) {
+            colIndex = i;
+            std::cout << "检测到列 " << i << " 被激活" << std::endl;
+            break;
+        }
+    }
+    
+    // 更新最近一次按键的行或列
+    if (rowIndex != -1) {
+        parent->activeRow = rowIndex;
+        std::cout << "更新活动行为 " << rowIndex << std::endl;
+    } else if (colIndex != -1) {
+        parent->activeCol = colIndex;
+        std::cout << "更新活动列为 " << colIndex << std::endl;
+    }
+    
+    // 如果行和列都已确定，则处理按键
+    if (parent->activeRow != -1 && parent->activeCol != -1 && 
+        (parent->activeRow != lastRow || parent->activeCol != lastCol)) {
+        
+        std::cout << "完整按键检测：行=" << parent->activeRow 
+                  << ", 列=" << parent->activeCol 
+                  << ", 按键=" << keyMap[parent->activeRow][parent->activeCol] << std::endl;
+        
+        // 处理按键
+        parent->processKeyPress(parent->activeRow, parent->activeCol);
+        
+        // 记录最后处理的按键
+        lastRow = parent->activeRow;
+        lastCol = parent->activeCol;
+        
+        // 更新时间戳
+        parent->lastPressTime = now;
+        
+        // 按键处理后重置，等待下一次按键
+        parent->activeRow = -1;
+        parent->activeCol = -1;
+    }
+}
+
+// 在 main.cpp 中添加键盘测试代码
+// 在 main() 函数中，在初始化键盘后添加以下代码：
+
+std::cout << "🔍 测试键盘配置..." << std::endl;
+for (int i = 0; i < 4; i++) {
+    int status = gpio.readGPIO(rowPins[i]);
+    std::cout << "行引脚 " << rowPins[i] << " 状态: " << status << std::endl;
+}
+for (int i = 0; i < 4; i++) {
+    int status = gpio.readGPIO(colPins[i]);
+    std::cout << "列引脚 " << colPins[i] << " 状态: " << status << std::endl;
+}
+
+// 增强键盘按键处理，显示明显的按键反馈
+keyboard.processKeyPress = [&passwordHandler](int row, int col) {
+    if (row >= 0 && row < 4 && col >= 0 && col < 4) {
+        char key = keyMap[row][col];
+        std::cout << "\n\n🔑🔑🔑 按键检测: [" << row << "," << col << "] -> " << key << " 🔑🔑🔑\n\n" << std::endl;
+        passwordHandler.handleKeyPress(key);
+    } else {
+        std::cout << "⚠️ 无效的按键坐标: [" << row << ", " << col << "]" << std::endl;
+    }
 };
-
-#endif // KEYBOARD_H
