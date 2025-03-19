@@ -6,6 +6,7 @@
 #include "dht/dht.h"
 #include "display/i2c_display.h"
 #include "i2c_handle.h"
+#include "Keyboard/keyboard.h" 
 
 int main() {
     std::cout << "系统启动！" << std::endl;
@@ -34,15 +35,25 @@ int main() {
         displayHandle.handleDHT(reading.temp_celsius, reading.humidity);
     });
     dht11.start();
+// ✅ **修改后的键盘引脚初始化**
+    initKeyboard(gpio);   
+    std::cout << "🔄 矩阵键盘已启动..." << std::endl;
 
+    // ✅ **启动键盘监听线程**
+    std::thread keyboardThread([]() { keyboardLoop(); }); 
+    keyboardThread.detach(); // **后台运行，不影响主进程**
+
+
+    
     // 主循环保持运行
     while (true) {
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
+    // add: 释放资源
+    cleanupKeyboard(); 
     gpio.stop();
     std::cout << "退出程序。" << std::endl;
     return 0;
 }
-
 
