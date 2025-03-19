@@ -1,6 +1,6 @@
 #include "pir.h"
 
-PIREventHandler::PIREventHandler(GPIO&gpio) : gpio(gpio) {
+PIREventHandler::PIREventHandler(GPIO&gpio, Buzzer& buzzer) : gpio(gpio),buzzer(buzzer) {
 
 }
 
@@ -19,7 +19,6 @@ void PIREventHandler::stop() {
 void PIREventHandler::handleEvent(const gpiod_line_event& event) {
     if (event.event_type == GPIOD_LINE_EVENT_RISING_EDGE) {
         std::cout << "[PIR] 运动检测触发！（上升沿）\n";
-    } else if (event.event_type == GPIOD_LINE_EVENT_FALLING_EDGE) {
-        std::cout << "[PIR] 运动信号消失！（下降沿）\n";
-    }
+        buzzer.startAlarm();
+    } 
 }
