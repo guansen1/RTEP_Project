@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/team38/FromGit/RTEP_Project
+CMAKE_SOURCE_DIR = /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/team38/FromGit/RTEP_Project/build
+CMAKE_BINARY_DIR = /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/alarm_system.dir/depend.make
@@ -70,88 +70,102 @@ include CMakeFiles/alarm_system.dir/progress.make
 include CMakeFiles/alarm_system.dir/flags.make
 
 CMakeFiles/alarm_system.dir/main.cpp.o: CMakeFiles/alarm_system.dir/flags.make
-CMakeFiles/alarm_system.dir/main.cpp.o: /home/team38/FromGit/RTEP_Project/main.cpp
+CMakeFiles/alarm_system.dir/main.cpp.o: /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/main.cpp
 CMakeFiles/alarm_system.dir/main.cpp.o: CMakeFiles/alarm_system.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/team38/FromGit/RTEP_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/alarm_system.dir/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/alarm_system.dir/main.cpp.o -MF CMakeFiles/alarm_system.dir/main.cpp.o.d -o CMakeFiles/alarm_system.dir/main.cpp.o -c /home/team38/FromGit/RTEP_Project/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/alarm_system.dir/main.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/alarm_system.dir/main.cpp.o -MF CMakeFiles/alarm_system.dir/main.cpp.o.d -o CMakeFiles/alarm_system.dir/main.cpp.o -c /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/main.cpp
 
 CMakeFiles/alarm_system.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/alarm_system.dir/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/team38/FromGit/RTEP_Project/main.cpp > CMakeFiles/alarm_system.dir/main.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/main.cpp > CMakeFiles/alarm_system.dir/main.cpp.i
 
 CMakeFiles/alarm_system.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/alarm_system.dir/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/team38/FromGit/RTEP_Project/main.cpp -o CMakeFiles/alarm_system.dir/main.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/main.cpp -o CMakeFiles/alarm_system.dir/main.cpp.s
 
 CMakeFiles/alarm_system.dir/gpio/gpio.cpp.o: CMakeFiles/alarm_system.dir/flags.make
-CMakeFiles/alarm_system.dir/gpio/gpio.cpp.o: /home/team38/FromGit/RTEP_Project/gpio/gpio.cpp
+CMakeFiles/alarm_system.dir/gpio/gpio.cpp.o: /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/gpio/gpio.cpp
 CMakeFiles/alarm_system.dir/gpio/gpio.cpp.o: CMakeFiles/alarm_system.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/team38/FromGit/RTEP_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/alarm_system.dir/gpio/gpio.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/alarm_system.dir/gpio/gpio.cpp.o -MF CMakeFiles/alarm_system.dir/gpio/gpio.cpp.o.d -o CMakeFiles/alarm_system.dir/gpio/gpio.cpp.o -c /home/team38/FromGit/RTEP_Project/gpio/gpio.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/alarm_system.dir/gpio/gpio.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/alarm_system.dir/gpio/gpio.cpp.o -MF CMakeFiles/alarm_system.dir/gpio/gpio.cpp.o.d -o CMakeFiles/alarm_system.dir/gpio/gpio.cpp.o -c /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/gpio/gpio.cpp
 
 CMakeFiles/alarm_system.dir/gpio/gpio.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/alarm_system.dir/gpio/gpio.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/team38/FromGit/RTEP_Project/gpio/gpio.cpp > CMakeFiles/alarm_system.dir/gpio/gpio.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/gpio/gpio.cpp > CMakeFiles/alarm_system.dir/gpio/gpio.cpp.i
 
 CMakeFiles/alarm_system.dir/gpio/gpio.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/alarm_system.dir/gpio/gpio.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/team38/FromGit/RTEP_Project/gpio/gpio.cpp -o CMakeFiles/alarm_system.dir/gpio/gpio.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/gpio/gpio.cpp -o CMakeFiles/alarm_system.dir/gpio/gpio.cpp.s
 
 CMakeFiles/alarm_system.dir/dht/dht.cpp.o: CMakeFiles/alarm_system.dir/flags.make
-CMakeFiles/alarm_system.dir/dht/dht.cpp.o: /home/team38/FromGit/RTEP_Project/dht/dht.cpp
+CMakeFiles/alarm_system.dir/dht/dht.cpp.o: /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/dht/dht.cpp
 CMakeFiles/alarm_system.dir/dht/dht.cpp.o: CMakeFiles/alarm_system.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/team38/FromGit/RTEP_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/alarm_system.dir/dht/dht.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/alarm_system.dir/dht/dht.cpp.o -MF CMakeFiles/alarm_system.dir/dht/dht.cpp.o.d -o CMakeFiles/alarm_system.dir/dht/dht.cpp.o -c /home/team38/FromGit/RTEP_Project/dht/dht.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/alarm_system.dir/dht/dht.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/alarm_system.dir/dht/dht.cpp.o -MF CMakeFiles/alarm_system.dir/dht/dht.cpp.o.d -o CMakeFiles/alarm_system.dir/dht/dht.cpp.o -c /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/dht/dht.cpp
 
 CMakeFiles/alarm_system.dir/dht/dht.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/alarm_system.dir/dht/dht.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/team38/FromGit/RTEP_Project/dht/dht.cpp > CMakeFiles/alarm_system.dir/dht/dht.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/dht/dht.cpp > CMakeFiles/alarm_system.dir/dht/dht.cpp.i
 
 CMakeFiles/alarm_system.dir/dht/dht.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/alarm_system.dir/dht/dht.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/team38/FromGit/RTEP_Project/dht/dht.cpp -o CMakeFiles/alarm_system.dir/dht/dht.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/dht/dht.cpp -o CMakeFiles/alarm_system.dir/dht/dht.cpp.s
 
 CMakeFiles/alarm_system.dir/pir/pir.cpp.o: CMakeFiles/alarm_system.dir/flags.make
-CMakeFiles/alarm_system.dir/pir/pir.cpp.o: /home/team38/FromGit/RTEP_Project/pir/pir.cpp
+CMakeFiles/alarm_system.dir/pir/pir.cpp.o: /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/pir/pir.cpp
 CMakeFiles/alarm_system.dir/pir/pir.cpp.o: CMakeFiles/alarm_system.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/team38/FromGit/RTEP_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/alarm_system.dir/pir/pir.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/alarm_system.dir/pir/pir.cpp.o -MF CMakeFiles/alarm_system.dir/pir/pir.cpp.o.d -o CMakeFiles/alarm_system.dir/pir/pir.cpp.o -c /home/team38/FromGit/RTEP_Project/pir/pir.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/alarm_system.dir/pir/pir.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/alarm_system.dir/pir/pir.cpp.o -MF CMakeFiles/alarm_system.dir/pir/pir.cpp.o.d -o CMakeFiles/alarm_system.dir/pir/pir.cpp.o -c /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/pir/pir.cpp
 
 CMakeFiles/alarm_system.dir/pir/pir.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/alarm_system.dir/pir/pir.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/team38/FromGit/RTEP_Project/pir/pir.cpp > CMakeFiles/alarm_system.dir/pir/pir.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/pir/pir.cpp > CMakeFiles/alarm_system.dir/pir/pir.cpp.i
 
 CMakeFiles/alarm_system.dir/pir/pir.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/alarm_system.dir/pir/pir.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/team38/FromGit/RTEP_Project/pir/pir.cpp -o CMakeFiles/alarm_system.dir/pir/pir.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/pir/pir.cpp -o CMakeFiles/alarm_system.dir/pir/pir.cpp.s
 
 CMakeFiles/alarm_system.dir/display/i2c_display.cpp.o: CMakeFiles/alarm_system.dir/flags.make
-CMakeFiles/alarm_system.dir/display/i2c_display.cpp.o: /home/team38/FromGit/RTEP_Project/display/i2c_display.cpp
+CMakeFiles/alarm_system.dir/display/i2c_display.cpp.o: /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/display/i2c_display.cpp
 CMakeFiles/alarm_system.dir/display/i2c_display.cpp.o: CMakeFiles/alarm_system.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/team38/FromGit/RTEP_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/alarm_system.dir/display/i2c_display.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/alarm_system.dir/display/i2c_display.cpp.o -MF CMakeFiles/alarm_system.dir/display/i2c_display.cpp.o.d -o CMakeFiles/alarm_system.dir/display/i2c_display.cpp.o -c /home/team38/FromGit/RTEP_Project/display/i2c_display.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/alarm_system.dir/display/i2c_display.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/alarm_system.dir/display/i2c_display.cpp.o -MF CMakeFiles/alarm_system.dir/display/i2c_display.cpp.o.d -o CMakeFiles/alarm_system.dir/display/i2c_display.cpp.o -c /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/display/i2c_display.cpp
 
 CMakeFiles/alarm_system.dir/display/i2c_display.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/alarm_system.dir/display/i2c_display.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/team38/FromGit/RTEP_Project/display/i2c_display.cpp > CMakeFiles/alarm_system.dir/display/i2c_display.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/display/i2c_display.cpp > CMakeFiles/alarm_system.dir/display/i2c_display.cpp.i
 
 CMakeFiles/alarm_system.dir/display/i2c_display.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/alarm_system.dir/display/i2c_display.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/team38/FromGit/RTEP_Project/display/i2c_display.cpp -o CMakeFiles/alarm_system.dir/display/i2c_display.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/display/i2c_display.cpp -o CMakeFiles/alarm_system.dir/display/i2c_display.cpp.s
 
 CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.o: CMakeFiles/alarm_system.dir/flags.make
-CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.o: /home/team38/FromGit/RTEP_Project/display/i2c_handle.cpp
+CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.o: /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/display/i2c_handle.cpp
 CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.o: CMakeFiles/alarm_system.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/team38/FromGit/RTEP_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.o -MF CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.o.d -o CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.o -c /home/team38/FromGit/RTEP_Project/display/i2c_handle.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.o -MF CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.o.d -o CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.o -c /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/display/i2c_handle.cpp
 
 CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/team38/FromGit/RTEP_Project/display/i2c_handle.cpp > CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/display/i2c_handle.cpp > CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.i
 
 CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/team38/FromGit/RTEP_Project/display/i2c_handle.cpp -o CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/display/i2c_handle.cpp -o CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.s
+
+CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.o: CMakeFiles/alarm_system.dir/flags.make
+CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.o: /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/buzzer/buzzer.cpp
+CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.o: CMakeFiles/alarm_system.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.o -MF CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.o.d -o CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.o -c /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/buzzer/buzzer.cpp
+
+CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/buzzer/buzzer.cpp > CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.i
+
+CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/buzzer/buzzer.cpp -o CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.s
 
 # Object files for target alarm_system
 alarm_system_OBJECTS = \
@@ -160,7 +174,8 @@ alarm_system_OBJECTS = \
 "CMakeFiles/alarm_system.dir/dht/dht.cpp.o" \
 "CMakeFiles/alarm_system.dir/pir/pir.cpp.o" \
 "CMakeFiles/alarm_system.dir/display/i2c_display.cpp.o" \
-"CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.o"
+"CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.o" \
+"CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.o"
 
 # External object files for target alarm_system
 alarm_system_EXTERNAL_OBJECTS =
@@ -171,10 +186,11 @@ alarm_system: CMakeFiles/alarm_system.dir/dht/dht.cpp.o
 alarm_system: CMakeFiles/alarm_system.dir/pir/pir.cpp.o
 alarm_system: CMakeFiles/alarm_system.dir/display/i2c_display.cpp.o
 alarm_system: CMakeFiles/alarm_system.dir/display/i2c_handle.cpp.o
+alarm_system: CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.o
 alarm_system: CMakeFiles/alarm_system.dir/build.make
 alarm_system: /usr/lib/aarch64-linux-gnu/libi2c.so
 alarm_system: CMakeFiles/alarm_system.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/team38/FromGit/RTEP_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable alarm_system"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable alarm_system"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/alarm_system.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -186,6 +202,6 @@ CMakeFiles/alarm_system.dir/clean:
 .PHONY : CMakeFiles/alarm_system.dir/clean
 
 CMakeFiles/alarm_system.dir/depend:
-	cd /home/team38/FromGit/RTEP_Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/team38/FromGit/RTEP_Project /home/team38/FromGit/RTEP_Project /home/team38/FromGit/RTEP_Project/build /home/team38/FromGit/RTEP_Project/build /home/team38/FromGit/RTEP_Project/build/CMakeFiles/alarm_system.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/build /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/build /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/build/CMakeFiles/alarm_system.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/alarm_system.dir/depend
 

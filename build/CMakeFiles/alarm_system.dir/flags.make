@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/team38/FromGit/RTEP_Project -I/home/team38/FromGit/RTEP_Project/dht -I/home/team38/FromGit/RTEP_Project/gpio -I/home/team38/FromGit/RTEP_Project/pir -I/home/team38/FromGit/RTEP_Project/display
+CXX_INCLUDES = -I/home/team38/FromGit/RTEP_Project_PIR/RTEP_Project -I/home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/dht -I/home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/gpio -I/home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/pir -I/home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/display -I/home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/buzzer
 
 CXX_FLAGS = -Wall -O2 -pthread -std=gnu++17
 

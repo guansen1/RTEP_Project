@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/team38/FromGit/RTEP_Project
+CMAKE_SOURCE_DIR = /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/team38/FromGit/RTEP_Project/build
+CMAKE_BINARY_DIR = /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/team38/FromGit/RTEP_Project/build/CMakeFiles /home/team38/FromGit/RTEP_Project/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/build/CMakeFiles /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/team38/FromGit/RTEP_Project/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -128,6 +128,30 @@ alarm_system: cmake_check_build_system
 alarm_system/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/alarm_system.dir/build.make CMakeFiles/alarm_system.dir/build
 .PHONY : alarm_system/fast
+
+buzzer/buzzer.o: buzzer/buzzer.cpp.o
+.PHONY : buzzer/buzzer.o
+
+# target to build an object file
+buzzer/buzzer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/alarm_system.dir/build.make CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.o
+.PHONY : buzzer/buzzer.cpp.o
+
+buzzer/buzzer.i: buzzer/buzzer.cpp.i
+.PHONY : buzzer/buzzer.i
+
+# target to preprocess a source file
+buzzer/buzzer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/alarm_system.dir/build.make CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.i
+.PHONY : buzzer/buzzer.cpp.i
+
+buzzer/buzzer.s: buzzer/buzzer.cpp.s
+.PHONY : buzzer/buzzer.s
+
+# target to generate assembly for a file
+buzzer/buzzer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/alarm_system.dir/build.make CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.s
+.PHONY : buzzer/buzzer.cpp.s
 
 dht/dht.o: dht/dht.cpp.o
 .PHONY : dht/dht.o
@@ -282,6 +306,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... alarm_system"
+	@echo "... buzzer/buzzer.o"
+	@echo "... buzzer/buzzer.i"
+	@echo "... buzzer/buzzer.s"
 	@echo "... dht/dht.o"
 	@echo "... dht/dht.i"
 	@echo "... dht/dht.s"

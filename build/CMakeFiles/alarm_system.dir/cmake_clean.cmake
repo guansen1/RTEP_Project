@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.o"
+  "CMakeFiles/alarm_system.dir/buzzer/buzzer.cpp.o.d"
   "CMakeFiles/alarm_system.dir/dht/dht.cpp.o"
   "CMakeFiles/alarm_system.dir/dht/dht.cpp.o.d"
   "CMakeFiles/alarm_system.dir/display/i2c_display.cpp.o"

@@ -1,6 +1,7 @@
 CMakeFiles/alarm_system.dir/gpio/gpio.cpp.o: \
- /home/team38/FromGit/RTEP_Project/gpio/gpio.cpp \
- /usr/include/stdc-predef.h /home/team38/FromGit/RTEP_Project/gpio/gpio.h \
+ /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/gpio/gpio.cpp \
+ /usr/include/stdc-predef.h \
+ /home/team38/FromGit/RTEP_Project_PIR/RTEP_Project/gpio/gpio.h \
  /usr/include/gpiod.h /usr/lib/gcc/aarch64-linux-gnu/12/include/stdbool.h \
  /usr/include/c++/12/stdlib.h /usr/include/c++/12/cstdlib \
  /usr/include/aarch64-linux-gnu/c++/12/bits/c++config.h \

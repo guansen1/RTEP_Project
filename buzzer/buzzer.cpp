@@ -2,6 +2,8 @@
 #include "buzzer.h"
 #include <iostream>
 
+#include <unistd.h>
+#include <string.h>
 Buzzer::Buzzer(GPIO& gpio, int buzzerPin) : gpio(gpio), buzzerPin(buzzerPin), alarm_active(false) {}
 
 Buzzer::~Buzzer() {
@@ -31,22 +33,20 @@ void Buzzer::alarmLoop() {
         return;
     }
     struct itimerspec its;
-    its.it_value.tv_sec = 0;  // 首次触发时间
+    its.it_value.tv_sec =0;  // 首次触发时间
     its.it_value.tv_nsec = 500000000;
     its.it_interval.tv_sec = 0;  // 周期触发间隔
     its.it_interval.tv_nsec = 500000000;
-    if (timerfd_settime(timerFd, 0, &timerSpec, nullptr) == -1) {
+    if (timerfd_settime(timerFd, 0, &its, nullptr) == -1) {
         std::cerr << "Failed to set timerfd\n";
         close(timerFd);
         return;
     }
     while (alarm_active) {
         uint64_t exp;
-        ssize_t s = read(timerfd, &exp, sizeof(uint64_t));
+        ssize_t s = read(timerFd, &exp, sizeof(uint64_t));
         if (s != sizeof(uint64_t)) {
-            if (running) {
-                std::cerr << "Failed to read timerfd: " << strerror(errno) << std::endl;
-            }
+            std::cerr << "Failed to read timerfd: " << strerror(errno) << std::endl;
             continue;
         }
         beep(1000,500);
@@ -63,5 +63,6 @@ void Buzzer::beep(int frequency, int duration) {
         gpio.writeGPIO(BUZZER_IO, 0);
         usleep(half_period);
     }
+    std::cout << "报警中 " << strerror(errno) << std::endl;
 }
 

@@ -15,11 +15,12 @@ int main() {
 
     // 初始化 GPIO（红外检测、其他设备）
     GPIO gpio;
-    Buzzer buzzer(gpio, BUZZER_IO);
+    
     gpio.gpio_init();  // 初始化 GPIO
-
+    Buzzer buzzer(gpio,BUZZER_IO);
+    
     // 注册 PIR 事件处理器（你原来的处理器，负责打印信息等）
-    PIREventHandler pirEventHandler(gpio);
+    PIREventHandler pirEventHandler(gpio,buzzer);
     gpio.registerCallback(PIR_IO,&pirEventHandler);
 
     // 注册 I2C 显示事件处理器，将根据 GPIO 事件更新屏幕显示
@@ -47,5 +48,31 @@ int main() {
     gpio.stop();
     std::cout << "退出程序。\n";
     return 0;
+    
+   /*
+   gpio.start();  
+   std::cout << "输入 's' 启动报警, 'q' 停止报警, 'e' 退出程序\n";
+
+   char command;
+   while (true) {
+       std::cout << "请输入指令: ";
+       std::cin >> command;
+
+       if (command == 's') {
+           std::cout << "⚠️  启动报警...\n";
+           buzzer.startAlarm();
+       } else if (command == 'q') {
+           std::cout << "🛑 停止报警...\n";
+           buzzer.stopAlarm();
+       } else if (command == 'e') {
+           std::cout << "🚪 退出程序...\n";
+           break;
+       } else {
+           std::cout << "❌ 无效输入，请输入 's', 'q' 或 'e'\n";
+       }
+   }
+   gpio.stop();
+   return 0;
+   */
 }
 
