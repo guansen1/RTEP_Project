@@ -27,13 +27,13 @@ ActiveKeyboardScanner::ActiveKeyboardScanner(GPIO &gpioRef)
 {
     // 配置行引脚为输入并启用内部上拉
     for (int i = 0; i < 4; i++) {
-        if (!gpio.configGPIO(rowPins[i],INPUT_PULLUP )) {
+        if (!gpio.configGPIO(rowPins[i],FALLING_EDGE )) {
             std::cerr << "Failed to configure row pBOTH_EDGESin " << rowPins[i] << std::endl;
         }
     }
     // 配置列引脚为输出
     for (int i = 0; i < 4; i++) {
-        if (!gpio.configGPIO(colPins[i], OUTPUT)) {
+        if (!gpio.configGPIO(colPins[i], RISING_EDGE)) {
             std::cerr << "Failed to configure col pin " << colPins[i] << std::endl;
         }
         // 初始设置列为高电平
