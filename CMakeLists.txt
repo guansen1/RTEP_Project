@@ -26,18 +26,20 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/pir
     ${CMAKE_SOURCE_DIR}/display
     ${CMAKE_SOURCE_DIR}/buzzer
+    ${CMAKE_SOURCE_DIR}/keyboard
 )
 
 
 # 添加可执行文件
 add_executable(alarm_system 
-    test.cpp 
+    test2.cpp 
     gpio/gpio.cpp 
     dht/dht.cpp 
     pir/pir.cpp 
     display/i2c_display.cpp
     display/i2c_handle.cpp
     buzzer/buzzer.cpp
+    keyboard/keyboard.cpp
 )
 
 # 链接库

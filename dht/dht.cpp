@@ -85,8 +85,6 @@ void DHT11::timerEvent() {
     if (readData(reading)) {
         // 应用平滑处理
         smoothReadings(reading);
-        
-        std::cout << " DHT TEMP " << reading.temp_celsius << " DHT HUM " << reading.humidity << std::endl;
         if (callback) {
             callback(reading);  // 调用回调函数
         }
@@ -99,27 +97,19 @@ bool DHT11::readData(DHTReading& result) {
     gpio.configGPIO(DHT_IO, OUTPUT);
     gpio.writeGPIO(DHT_IO, 0);  // 拉低引脚
     std::this_thread::sleep_for(std::chrono::milliseconds(20));  // 保持低电平至少 18ms
-    std::cout << "GPIO pull down finished " << std::endl;
     gpio.writeGPIO(DHT_IO, 1);  // 拉高引脚
     std::this_thread::sleep_for(std::chrono::microseconds(30));  // 保持高电平 20~40us
-    std::cout << "GPIO pull up finished " << std::endl;
     // 检查 DHT11 响应
     if (!checkResponse()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));  // 等待一小段时间再重试
         continue;  // 尝试下一次
     }
     
-    std::cout << "Checkpass " << std::endl;
     // 读取 40 位数据
     uint8_t data[5] = {0};
     for (int i = 0; i < 5; i++) {
         data[i] = readByte();
     }
-    std::cout << "Data read from DHT11: ";
-    for (int i = 0; i < 5; i++) {
-        std::cout << "0x" << std::hex << static_cast<int>(data[i]) << " ";  // 以十六进制打印
-    }
-    std::cout << std::endl;
     
     if ((data[0] + data[1] + data[2] + data[3]) == data[4]) {
         float humidity = data[0] + data[1]/10.0f;  // 处理湿度数据
@@ -131,14 +121,8 @@ bool DHT11::readData(DHTReading& result) {
             result.humidity = humidity;
             result.temp_celsius = temp_celsius;
             return true;
-        } else {
-            std::cerr << "读取的数据超出合理范围: 湿度=" << humidity 
-                      << "%, 温度=" << temp_celsius << "°C" << std::endl;
-        }
-    } else {
-        std::cerr << "Checksum error: " << static_cast<int>(data[0] + data[1] + data[2] + data[3]) 
-                  << " != " << static_cast<int>(data[4]) << std::endl;
-    }
+        } 
+    } 
 
      // 如果校验失败或数据不合理，等待短暂时间后重试
      std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -154,20 +138,16 @@ bool DHT11::checkResponse() {
     auto start = std::chrono::steady_clock::now();
     while (gpio.readGPIO(DHT_IO) == 1) {
         if (std::chrono::steady_clock::now() - start > std::chrono::microseconds(100)) {
-            std::cerr << "DHT pull down failed " << std::endl;
             return false;  // 超时
         }
     }
-    std::cout << "DHT pull down finished " << std::endl;
     // 等待 DHT11 拉高引脚 40~80us
     start = std::chrono::steady_clock::now();
     while (gpio.readGPIO(DHT_IO) == 0) {
         if (std::chrono::steady_clock::now() - start > std::chrono::microseconds(100)) {
-            std::cerr << "DHT pull up failed " << std::endl;
             return false;  // 超时
         }
     }
-    std::cout << "DHT pull up finished " << std::endl;
     return true;
 }
 
@@ -226,8 +206,5 @@ void DHT11::smoothReadings(DHTReading& reading) {
         
         reading.temp_celsius = temp_sum / HISTORY_SIZE;
         reading.humidity = humidity_sum / HISTORY_SIZE;
-        
-        std::cout << "平滑后数据: 温度=" << reading.temp_celsius 
-                  << "°C, 湿度=" << reading.humidity << "%" << std::endl;
     }
 }

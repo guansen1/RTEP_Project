@@ -12,12 +12,14 @@ I2cDisplayHandle::~I2cDisplayHandle() {
 
 void I2cDisplayHandle::handleEvent(const gpiod_line_event &event) {
     if (event.event_type == GPIOD_LINE_EVENT_RISING_EDGE) {
+        if (state == DisplayState ::SAFE){
         state = DisplayState::INVASION;
         inputBuffer.clear();  // 清空密码输入
         I2cDisplay::getInstance().displayIntrusion();
         std::cout << "[I2cDisplayHandle] PIR rising: state switched to INVASION" << std::endl;
         // 可选：在进入入侵状态时启动响铃
          buzzer.startAlarm();
+    }
     }
     // PIR下降沿不处理，保持 INVASION 状态直到键盘解除
 }
