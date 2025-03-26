@@ -20,8 +20,8 @@ enum GPIOconfig{
 };
 enum GPIOdef{
     PIR_IO = 14,
-    BUZZER_IO = 15,
-    DHT_IO = 18
+    DHT_IO = 15,
+    BUZZER_IO = 18
 };
 
 class GPIO {

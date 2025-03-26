@@ -19,8 +19,8 @@ GPIO::~GPIO() {
 
 void GPIO::gpio_init() {
     configGPIO(PIR_IO, BOTH_EDGES);
-    configGPIO(BUZZER_IO, OUTPUT);
     configGPIO(DHT_IO, OUTPUT);
+    //configGPIO(BUZZER_IO, OUTPUT); // KEEP COMMENT HERE! NOT ALLOWED TO CONFIG GPIO 18!!!
 }
 
 bool GPIO::configGPIO(int pin_number, int config_num) {

@@ -15,9 +15,10 @@ int main() {
 
     // 初始化 GPIO（红外检测、其他设备）
     GPIO gpio;
-    
+    RPI_PWM pwm;
+    Buzzer buzzer(pwm);
     gpio.gpio_init();  // 初始化 GPIO
-    Buzzer buzzer(gpio,BUZZER_IO);
+    
     
     // 注册 PIR 事件处理器（你原来的处理器，负责打印信息等）
     PIREventHandler pirEventHandler(gpio,buzzer);
