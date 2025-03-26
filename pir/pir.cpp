@@ -19,6 +19,6 @@ void PIREventHandler::stop() {
 void PIREventHandler::handleEvent(const gpiod_line_event& event) {
     if (event.event_type == GPIOD_LINE_EVENT_RISING_EDGE) {
         std::cout << "[PIR] 运动检测触发！（上升沿）\n";
-        buzzer.startAlarm();
+        buzzer.enable(1000);
     } 
 }

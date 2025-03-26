@@ -18,7 +18,7 @@ void I2cDisplayHandle::handleEvent(const gpiod_line_event &event) {
         I2cDisplay::getInstance().displayIntrusion();
         std::cout << "[I2cDisplayHandle] PIR rising: state switched to INVASION" << std::endl;
         // 可选：在进入入侵状态时启动响铃
-         buzzer.startAlarm();
+        //buzzer.startAlarm();
     }
     }
     // PIR下降沿不处理，保持 INVASION 状态直到键盘解除
@@ -49,7 +49,7 @@ void I2cDisplayHandle::handleKeyPress(char key) {
                     state = DisplayState::SAFE;
                     inputBuffer.clear();
                     // 在解锁时关闭响铃
-                    buzzer.stopAlarm();
+                    buzzer.disable();
                     // 使用最新 DHT 数据更新显示 SAFE 状态及温湿度数据
                     std::string tempStr = "Temp:" + std::to_string(lastTemp) + " C";
                     std::string humStr  = "Hum:"  + std::to_string(lastHumidity) + " %";

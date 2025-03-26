@@ -19,8 +19,8 @@ int main() {
     GPIO gpio;
     gpio.gpio_init();
 
-    // 初始化蜂鸣器
-    Buzzer buzzer(gpio, BUZZER_IO);
+    RPI_PWM pwm;
+    Buzzer buzzer(pwm);
 
     // PIR 人体红外检测模块事件处理器
     PIREventHandler pirHandler(gpio, buzzer);
