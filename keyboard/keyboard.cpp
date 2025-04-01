@@ -1,5 +1,5 @@
 #include "keyboard.h"
-
+#include "display/i2c_handle.h"
 using namespace std;
 
 // 根据实际硬件接线修改以下行和列对应的GPIO编号
@@ -19,8 +19,8 @@ const char ActiveKeyboardScanner::keyMap[4][4] = {
     {'*', '0', '#', 'D'}
 };
 
-ActiveKeyboardScanner::ActiveKeyboardScanner(GPIO &gpioRef)
-    : gpio(gpioRef), scanning(false), timerfd(-1)
+ActiveKeyboardScanner::ActiveKeyboardScanner(GPIO &gpioRef,I2cDisplayHandle &displayHandle)
+    : gpio(gpioRef), scanning(false), timerfd(-1), displayHandle(displayHandle)
 {
 
 }
@@ -122,3 +122,10 @@ void ActiveKeyboardScanner::scanLoop() {
         timerEvent();
     }
 }
+void ActiveKeyboardScanner::initkeyboard(I2cDisplayHandle& displayHandle) {
+    setKeyCallback([&displayHandle](char key) {
+        displayHandle.handleKeyPress(key);  // 调用显示处理逻辑
+    });
+}
+
+

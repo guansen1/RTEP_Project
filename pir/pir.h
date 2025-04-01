@@ -3,9 +3,10 @@
 #include "gpio/gpio.h"
 #include "buzzer/buzzer.h"
 #include "keyboard/keyboard.h"
+#include "telegram/telegram_listener.h"
 class PIREventHandler : public GPIO::GPIOEventCallbackInterface {
     public:
-        PIREventHandler(GPIO&gpio, Buzzer&buzzer);
+        PIREventHandler(GPIO&gpio, Buzzer&buzzer, TelegramListener&listener);
         ~PIREventHandler();
         void start();
         void stop();
@@ -13,6 +14,7 @@ class PIREventHandler : public GPIO::GPIOEventCallbackInterface {
     private:
         GPIO& gpio;
         Buzzer&buzzer;
+        TelegramListener& listener;
     };
 
 #endif

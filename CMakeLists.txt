@@ -27,12 +27,13 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/display
     ${CMAKE_SOURCE_DIR}/buzzer
     ${CMAKE_SOURCE_DIR}/keyboard
+    ${CMAKE_SOURCE_DIR}/telegram
 )
 
 
 # 添加可执行文件
 add_executable(alarm_system 
-    test2.cpp 
+    main.cpp 
     gpio/gpio.cpp 
     dht/dht.cpp 
     pir/pir.cpp 
@@ -40,7 +41,9 @@ add_executable(alarm_system
     display/i2c_handle.cpp
     buzzer/buzzer.cpp
     keyboard/keyboard.cpp
+    telegram/telegram.cpp
+    telegram/telegram_listener.cpp
 )
 
 # 链接库
-target_link_libraries(alarm_system ${GPIOD_LIBRARIES} ${I2C_LIB})
+target_link_libraries(alarm_system ${GPIOD_LIBRARIES} ${I2C_LIB} curl)
