@@ -18,9 +18,19 @@ GPIO::~GPIO() {
 }
 
 void GPIO::gpio_init() {
+    configGPIO(KEY_COL1_IO, OUTPUT);
+    configGPIO(KEY_COL2_IO, OUTPUT);
+    configGPIO(KEY_COL3_IO, OUTPUT);
+    configGPIO(KEY_ROW1_IO, INPUT_PULLUP);
     configGPIO(PIR_IO, BOTH_EDGES);
     configGPIO(DHT_IO, OUTPUT);
+    configGPIO(KEY_ROW2_IO, INPUT_PULLUP);
+    //configGPIO(VCC_IO, INPUT_PULLUP);
     //configGPIO(BUZZER_IO, OUTPUT);// KEEP COMMENT HERE! NOT ALLOWED TO CONFIG GPIO 18!!!
+    configGPIO(KEY_COL4_IO, OUTPUT);
+    configGPIO(KEY_ROW3_IO, INPUT_PULLUP);
+    configGPIO(KEY_ROW4_IO, INPUT_PULLUP);
+    //configGPIO(GND_IO, INPUT_PULLDOWN);
 }
 
 bool GPIO::configGPIO(int pin_number, int config_num) {
@@ -44,7 +54,9 @@ bool GPIO::configGPIO(int pin_number, int config_num) {
         case INPUT_PULLUP: request_status = gpiod_line_request_input_flags(line, "GPIO_input_pullup", GPIOD_LINE_REQUEST_FLAG_BIAS_PULL_UP); break;
         case INPUT_PULLDOWN: request_status = gpiod_line_request_input_flags(line, "GPIO_input_pulldown", GPIOD_LINE_REQUEST_FLAG_BIAS_PULL_DOWN); break;
         case RISING_EDGE: request_status = gpiod_line_request_both_edges_events(line, "GPIO_edge_rising"); break;
-        case FALLING_EDGE: request_status = gpiod_line_request_falling_edge_events(line, "GPIO_edge_falling"); break;
+        case FALLING_EDGE: 
+            request_status = gpiod_line_request_falling_edge_events_flags(line, "GPIO_edge_falling", GPIOD_LINE_REQUEST_FLAG_BIAS_PULL_UP); 
+            break;
         case BOTH_EDGES: request_status = gpiod_line_request_both_edges_events(line, "GPIO_edge_both"); break;
         default:
             std::cerr << "错误: 未知的 GPIO 配置编号 " << config_num << std::endl;

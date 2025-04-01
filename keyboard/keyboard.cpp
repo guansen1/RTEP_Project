@@ -25,20 +25,7 @@ const char ActiveKeyboardScanner::keyMap[4][4] = {
 ActiveKeyboardScanner::ActiveKeyboardScanner(GPIO &gpioRef)
     : gpio(gpioRef), scanning(false)
 {
-    // 配置行引脚为输入并启用内部上拉
-    for (int i = 0; i < 4; i++) {
-        if (!gpio.configGPIO(rowPins[i],INPUT_PULLUP )) {
-            std::cerr << "Failed to configure row pBOTH_EDGESin " << rowPins[i] << std::endl;
-        }
-    }
-    // 配置列引脚为输出
-    for (int i = 0; i < 4; i++) {
-        if (!gpio.configGPIO(colPins[i], OUTPUT)) {
-            std::cerr << "Failed to configure col pin " << colPins[i] << std::endl;
-        }
-        // 初始设置列为高电平
-        gpio.writeGPIO(colPins[i], 1);
-    }
+
 }
 
 ActiveKeyboardScanner::~ActiveKeyboardScanner() {

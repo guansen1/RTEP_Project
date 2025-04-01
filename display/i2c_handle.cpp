@@ -40,7 +40,7 @@ void I2cDisplayHandle::handleDHT(float temp, float humidity) {
 void I2cDisplayHandle::handleKeyPress(char key) {
     if (state == DisplayState::INVASION) {
         // 仅处理数字键输入
-        if (key >= '0' && key <= '9') {
+        //if (key >= '0' && key <= '9') {
             inputBuffer.push_back(key);
             std::cout << "[I2cDisplayHandle] Password input: " << inputBuffer << std::endl;
             // 当输入达到4位时验证密码
@@ -63,6 +63,6 @@ void I2cDisplayHandle::handleKeyPress(char key) {
                     inputBuffer.clear();
                 }
             }
-        }
+        //}
     }
 }

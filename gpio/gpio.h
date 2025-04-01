@@ -19,10 +19,19 @@ enum GPIOconfig{
     BOTH_EDGES = 6          // 双边沿触发事件
 };
 enum GPIOdef{
+    KEY_COL1_IO = 1,
+    KEY_COL2_IO = 7,
+    KEY_COL3_IO = 8,
+    KEY_ROW1_IO = 13,
     PIR_IO = 14,
     DHT_IO = 15,
-    BUZZER_IO = 18
-    
+    KEY_ROW2_IO = 16,
+    VCC_IO = 17,
+    BUZZER_IO = 18,
+    KEY_ROW3_IO = 20,
+    KEY_ROW4_IO = 21,
+    KEY_COL4_IO = 26,
+    GND_IO = 27
 };
 
 class GPIO {
