@@ -56,6 +56,9 @@ add_library(display_lib
 )
 target_link_libraries(display_lib ${I2C_LIB})
 
+add_library(buzzer_lib buzzer.cpp)
+target_link_libraries(buzzer_lib gpio_lib)
+
 # 添加主可执行文件
 add_executable(alarm_system main.cpp)
 target_link_libraries(alarm_system 
@@ -81,7 +84,7 @@ if(BUILD_TESTS)
     enable_testing()
     
     # 添加DHT11单元测试
-    add_executable(dht11_test tests/dht11_test.cpp)
+    add_executable(dht11_test test/dht11_test.cpp)
     target_link_libraries(dht11_test
         gtest
         gtest_main
@@ -93,9 +96,82 @@ if(BUILD_TESTS)
     )
     add_test(NAME DHT11Test COMMAND dht11_test)
     
-    # 以下是可选的其他传感器测试
-    # 例如PIR传感器测试
-    # add_executable(pir_test tests/pir_test.cpp)
-    # target_link_libraries(pir_test gtest gtest_main gmock pir_lib gpio_lib pthread ${GPIOD_LIBRARIES})
-    # add_test(NAME PIRTest COMMAND pir_test)
+    # 添加蜂鸣器单元测试
+add_executable(buzzer_test test/buzzer_test.cpp)
+target_link_libraries(buzzer_test
+    gtest
+    gtest_main
+    gmock
+    buzzer_lib
+    gpio_lib
+    pthread
+    ${GPIOD_LIBRARIES}
+)
+add_test(NAME BuzzerTest COMMAND buzzer_test)
+    
+    # 添加PIR传感器测试
+add_executable(pir_test test/pir_test.cpp)
+target_link_libraries(pir_test
+    gtest
+    gtest_main
+    gmock
+    pir_lib
+    gpio_lib
+    pthread
+    ${GPIOD_LIBRARIES}
+)
+add_test(NAME PIRTest COMMAND pir_test)
+
+# 添加GPIO单元测试
+add_executable(gpio_test test/gpio_test.cpp)
+target_link_libraries(gpio_test
+    gtest
+    gtest_main
+    gmock
+    gpio_lib
+    pthread
+    ${GPIOD_LIBRARIES}
+)
+add_test(NAME GPIOTest COMMAND gpio_test)
+
+# 添加I2C显示器单元测试
+add_executable(i2c_display_test test/i2c_display_test.cpp)
+target_link_libraries(i2c_display_test
+    gtest
+    gtest_main
+    gmock
+    display_lib
+    gpio_lib
+    pthread
+    ${GPIOD_LIBRARIES}
+    ${I2C_LIB}
+)
+
+# 如果启用了硬件测试，则添加相应的编译定义
+if(ENABLE_HARDWARE_TEST)
+    target_compile_definitions(i2c_display_test PRIVATE HARDWARE_TEST_ENABLED)
+    message(STATUS "I2C显示器硬件测试已启用")
+else()
+    message(STATUS "I2C显示器硬件测试已禁用，仅运行自动化测试")
+endif()
+
+add_test(NAME I2CDisplayTest COMMAND i2c_display_test)
+
+# 添加键盘模块库
+add_library(keyboard_lib keyboard/keyboard.cpp)
+target_link_libraries(keyboard_lib gpio_lib)
+
+# 添加键盘单元测试
+add_executable(keyboard_test test/keyboard_unit_test.cpp)
+target_link_libraries(keyboard_test
+    gtest
+    gtest_main
+    gmock
+    keyboard_lib
+    gpio_lib
+    pthread
+    ${GPIOD_LIBRARIES}
+)
+add_test(NAME KeyboardTest COMMAND keyboard_test)
+
 endif()

@@ -25,22 +25,22 @@ enum GPIOdef{
 };
 
 class GPIO {
-    public:
-        struct GPIOEventCallbackInterface {
-            virtual void handleEvent(const gpiod_line_event& event) = 0;
-            virtual ~GPIOEventCallbackInterface() = default;
-        };
-    
-        GPIO();
-        ~GPIO();
-    
-        void gpio_init();
-        bool configGPIO(int pin_number, int config_num);
-        int readGPIO(int pin_number);
-        bool writeGPIO(int pin_number, int value);
-        void registerCallback(int pin_number, GPIOEventCallbackInterface* callback);
-        void start();
-        void stop();
+public:
+    struct GPIOEventCallbackInterface {
+        virtual void handleEvent(const gpiod_line_event& event) = 0;
+        virtual ~GPIOEventCallbackInterface() = default;
+    };
+
+    GPIO();
+    virtual ~GPIO();  // 析构函数也应该是虚拟的
+
+    virtual void gpio_init();  // 添加virtual关键字
+    virtual bool configGPIO(int pin_number, int config_num);  // 添加virtual关键字
+    virtual int readGPIO(int pin_number);  // 添加virtual关键字
+    virtual bool writeGPIO(int pin_number, int value);  // 添加virtual关键字
+    virtual void registerCallback(int pin_number, GPIOEventCallbackInterface* callback);  // 添加virtual关键字
+    virtual void start();  // 添加virtual关键字
+    virtual void stop();  // 添加virtual关键字
     
     private:
         void worker();

@@ -24,7 +24,7 @@ public:
     void gpio_init() override {}
     void start() override {}
     void stop() override {}
-    void registerCallback(int pin_number, GPIOEventCallbackInterface* callback) override {
+    void registerCallback(int pin_number, GPIO::GPIOEventCallbackInterface* callback) override {
         // 空实现，不调用实际硬件操作
     }
     
@@ -101,7 +101,7 @@ public:
     void gpio_init() override {}
     void start() override {}
     void stop() override {}
-    void registerCallback(int pin_number, GPIOEventCallbackInterface* callback) override {}
+    void registerCallback(int pin_number, GPIO::GPIOEventCallbackInterface* callback) override {}
     
     // 覆盖析构函数
     ~TestableGPIO() override {}
