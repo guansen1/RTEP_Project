@@ -2,11 +2,14 @@
 #define KEYBOARD_H
 
 #include "gpio/gpio.h"
-#include <string>
+#include <string.h>
 #include <functional>
 #include <thread>
 #include <atomic>
-
+#include <iostream>
+#include <chrono>
+#include <unistd.h>
+#include <sys/timerfd.h>
 class ActiveKeyboardScanner {
 public:
     // 构造函数接收GPIO对象引用
@@ -17,17 +20,18 @@ public:
     void start();
     // 停止扫描
     void stop();
-
+    void closescan();
     // 设置按键回调函数，当检测到按键时调用该回调并传递对应的字符
     void setKeyCallback(std::function<void(char)> callback);
 
 private:
     // 主扫描循环
     void scanLoop();
-
+    void timerEvent();  // 新增：定时器事件处理函数
     GPIO &gpio;
-    std::atomic<bool> scanning;
     std::thread scanThread;
+    std::atomic<bool> scanning;
+    int timerfd;  // 新增：定时器文件描述符
     std::function<void(char)> keyCallback;
 
     // 键盘行和列引脚，按实际硬件接线修改：

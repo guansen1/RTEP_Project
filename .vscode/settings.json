@@ -61,7 +61,8 @@
         "iomanip": "cpp",
         "span": "cpp",
         "text_encoding": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "cstring": "cpp"
     },
     "cmake.sourceDirectory": "/home/team38/FromGit/RTEP_Project"
 }

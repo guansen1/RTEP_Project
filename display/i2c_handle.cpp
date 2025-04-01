@@ -3,8 +3,8 @@
 #include <thread>
 #include <string>
 
-I2cDisplayHandle::I2cDisplayHandle(Buzzer &buzzerRef)
-    : state(DisplayState::SAFE), inputBuffer(""), lastTemp(0.0f), lastHumidity(0.0f), buzzer(buzzerRef) {
+I2cDisplayHandle::I2cDisplayHandle(Buzzer &buzzerRefr)
+    : state(DisplayState::SAFE), inputBuffer(""), lastTemp(0.0f), lastHumidity(0.0f), buzzer(buzzerRefr){
 }
 
 I2cDisplayHandle::~I2cDisplayHandle() {

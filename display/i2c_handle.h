@@ -4,7 +4,7 @@
 #include "gpio/gpio.h"
 #include "display/i2c_display.h"
 #include "buzzer/buzzer.h"  // 包含 buzzer 模块
-
+#include "keyboard/keyboard.h"
 class I2cDisplayHandle : public GPIO::GPIOEventCallbackInterface {
 public:
     // 构造函数接收一个 Buzzer 引用

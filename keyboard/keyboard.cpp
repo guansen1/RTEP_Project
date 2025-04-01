@@ -1,7 +1,4 @@
 #include "keyboard.h"
-#include <iostream>
-#include <chrono>
-#include <thread>
 
 using namespace std;
 
@@ -23,7 +20,7 @@ const char ActiveKeyboardScanner::keyMap[4][4] = {
 };
 
 ActiveKeyboardScanner::ActiveKeyboardScanner(GPIO &gpioRef)
-    : gpio(gpioRef), scanning(false)
+    : gpio(gpioRef), scanning(false), timerfd(-1)
 {
 
 }
@@ -38,44 +35,90 @@ void ActiveKeyboardScanner::setKeyCallback(std::function<void(char)> callback) {
 
 void ActiveKeyboardScanner::start() {
     scanning = true;
+    timerfd = timerfd_create(CLOCK_MONOTONIC, 0);
+    if (timerfd == -1) {
+        std::cerr << "Failed to create timerfd: " << strerror(errno) << std::endl;
+        return;
+    }
+    // 2s timer
+    struct itimerspec its;
+    its.it_value.tv_sec = 0;  // first trigger time
+    its.it_value.tv_nsec = 100000000;
+    its.it_interval.tv_sec = 0;  // period trigger time
+    its.it_interval.tv_nsec = 100000000;
+    
+    if (timerfd_settime(timerfd, 0, &its, NULL) == -1) {
+        std::cerr << "Failed to set timerfd: " << strerror(errno) << std::endl;
+        close(timerfd);
+        timerfd = -1;
+        return;
+    }
+    
+    // start worker thread
     scanThread = std::thread(&ActiveKeyboardScanner::scanLoop, this);
 }
 
 void ActiveKeyboardScanner::stop() {
     scanning = false;
-    if (scanThread.joinable())
+    // close time fd
+    if (timerfd != -1) {
+        close(timerfd);
+        timerfd = -1;
+    }
+    if (scanThread.joinable()){
         scanThread.join();
+    }
 }
-
+void ActiveKeyboardScanner::closescan(){
+    scanning = false;
+}
+void ActiveKeyboardScanner::timerEvent() {
+    for (int col = 0; col < 4; col++) {
+        // 将当前列设置为低电平
+        gpio.writeGPIO(colPins[col], 0);
+        // 等待电平稳定（10毫秒）
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        // 检查所有行
+        for (int row = 0; row < 4; row++) {
+            int value = gpio.readGPIO(rowPins[row]);
+            // 当按键按下时，由于按键将行与低电平的列短接，行电平会被拉低
+            if (value == 0) {
+                char key = keyMap[row][col];
+                if (keyCallback) {
+                    keyCallback(key);
+                } else {
+                    std::cout << "[ActiveKeyboard] Key pressed: " << key << std::endl;
+                }
+                // 等待按键释放（简化处理），避免连续检测
+                while (gpio.readGPIO(rowPins[row]) == 0 && scanning) {
+                    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+                }
+            }
+        }
+        // 将当前列恢复为高电平
+        gpio.writeGPIO(colPins[col], 1);
+        // 列与列之间等待一段时间
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+}
 void ActiveKeyboardScanner::scanLoop() {
     // 主扫描循环：依次将每个列驱动为低电平，再读取所有行状态
     while (scanning) {
-        for (int col = 0; col < 4; col++) {
-            // 将当前列设置为低电平
-            gpio.writeGPIO(colPins[col], 0);
-            // 等待电平稳定（10毫秒）
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-            // 检查所有行
-            for (int row = 0; row < 4; row++) {
-                int value = gpio.readGPIO(rowPins[row]);
-                // 当按键按下时，由于按键将行与低电平的列短接，行电平会被拉低
-                if (value == 0) {
-                    char key = keyMap[row][col];
-                    if (keyCallback) {
-                        keyCallback(key);
-                    } else {
-                        std::cout << "[ActiveKeyboard] Key pressed: " << key << std::endl;
-                    }
-                    // 等待按键释放（简化处理），避免连续检测
-                    while (gpio.readGPIO(rowPins[row]) == 0 && scanning) {
-                        std::this_thread::sleep_for(std::chrono::milliseconds(20));
-                    }
-                }
-            }
-            // 将当前列恢复为高电平
-            gpio.writeGPIO(colPins[col], 1);
-            // 列与列之间等待一段时间
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        if (timerfd == -1) {
+            break;
         }
+        
+        // block until trigger
+        uint64_t exp;
+        ssize_t s = read(timerfd, &exp, sizeof(uint64_t));
+        if (s != sizeof(uint64_t)) {
+            if (scanning) {
+                std::cerr << "fail to read timer: " << strerror(errno) << std::endl;
+            }
+            continue;
+        }
+        
+        // trigger, excute callback
+        timerEvent();
     }
 }

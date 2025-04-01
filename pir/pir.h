@@ -2,6 +2,7 @@
 #define PIR_H
 #include "gpio/gpio.h"
 #include "buzzer/buzzer.h"
+#include "keyboard/keyboard.h"
 class PIREventHandler : public GPIO::GPIOEventCallbackInterface {
     public:
         PIREventHandler(GPIO&gpio, Buzzer&buzzer);

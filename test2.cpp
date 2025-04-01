@@ -21,7 +21,7 @@ int main() {
 
     RPI_PWM pwm;
     Buzzer buzzer(pwm);
-
+    ActiveKeyboardScanner keyboardScanner(gpio);
     // PIR 人体红外检测模块事件处理器
     PIREventHandler pirHandler(gpio, buzzer);
     gpio.registerCallback(PIR_IO, &pirHandler);
@@ -41,7 +41,7 @@ int main() {
     dht11.start();
 
     // ✅ 替换虚拟键盘：初始化 4x4 硬件矩阵键盘
-    ActiveKeyboardScanner keyboardScanner(gpio);
+   
     keyboardScanner.setKeyCallback([&displayHandle](char key) {
         displayHandle.handleKeyPress(key);  // 触发显示处理逻辑
         std::cout << "[HardwareKey] " << key << " pressed" << std::endl;
