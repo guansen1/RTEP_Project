@@ -3,11 +3,11 @@
 
 #include <string>
 
-// 发送 Telegram 消息的函数声明  
-// 参数 token：Bot 的 API Token
-// 参数 chat_id：目标聊天的 ID
-// 参数 message：要发送的消息文本
-// 返回 true 表示发送成功，false 表示发送失败
+// Function declaration for sending Telegram messages  
+// Parameter token: the Bot's API Token
+// Parameter chat_id: the ID of the target chat.
+// Parameter message: the text of the message to be sent
+// Returns true if the message was sent successfully, false if it was not.
 bool sendTelegramMessage(const std::string &token, const std::string &chat_id, const std::string &message);
 
 #endif // TELEGRAM_H
