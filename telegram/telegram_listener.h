@@ -5,39 +5,39 @@
 #include <string>
 #include <thread>
 
-// **前向声明 Buzzer 类**
+// **Forward declaration of the Buzzer class
 class Buzzer;
 
 class TelegramListener {
 public:
-    // 构造函数
+    // Constructer
     TelegramListener(const std::string& token, const std::string& chatId, Buzzer& buzzer);
     ~TelegramListener();
 
-    // 启动监听线程
+    // Start a listener thread
     void start();
-    // 停止监听线程
+    // Stop listening threads
     void stop();
 
-    // 检查是否处于检测模式
+    // Check to see if it is in detection mode
     bool isDetectionMode() const;
-    // 检查是否允许报警
+    // Check if alarms are allowed
     bool isAlarmEnabled() const;
     
     void sendTemperatureData(float temperature, float humidity);
     
 
 private:
-    // 监听循环
+    // monitor a loop
     void run();
 
     std::string token;
     std::string chatId;
-    std::atomic_bool detectionMode; // 控制数据发送
-    std::atomic_bool alarmEnabled;  // 控制 PIR 是否触发蜂鸣器
+    std::atomic_bool detectionMode; // Control data sending
+    std::atomic_bool alarmEnabled;  // Controls whether the PIR triggers the buzzer
     std::atomic_bool running;
     std::thread listenerThread;
-    Buzzer& buzzer;  // **引用 Buzzer 实例**
+    Buzzer& buzzer; // **References to Buzzer instances**
 };
 
 #endif // TELEGRAM_LISTENER_H
