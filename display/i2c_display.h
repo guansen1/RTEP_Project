@@ -7,40 +7,38 @@
 
 class I2cDisplay {
 public:
-    // 获取单例实例
+    // Get singleton instance
     static I2cDisplay& getInstance();
 
-    // 初始化 SSD1306（打开 I2C 总线并发送初始化命令）
+    // Initialize SSD1306 (open I2C bus and send initialization commands)
     void init();
 
-    // 单行显示文本（默认在页0，居中显示）
+    // Display single-line text (default on page 0, centered)
     void displayText(const std::string &text);
 
-    // 在指定页绘制文本，自动水平居中
+    // Draw text on the specified page, automatically centered horizontally
     void displayTextAt(int page, const std::string &text);
 
-    // 显示两行文本（例如温湿度数据），分别绘制在指定页（例如页2和页4）
+    // Display two lines of text (e.g., temperature and humidity data) on specified pages (e.g., page 2 and page 4)
     void displayMultiLine(const std::string &line1, const std::string &line2);
 
-    // 显示 "INVASION"（居中显示，覆盖整个屏幕）
+    // Display "INVASION" (centered, covers the entire screen)
     void displayIntrusion();
 
-    // 显示 "SAFE"（仅显示 SAFE，不更新温湿度数据）
+    // Display "SAFE" (only show SAFE, without updating temperature and humidity)
     void displaySafe();
 
-    // 在 SAFE 状态下同时显示 "SAFE" 与温湿度数据，
-    // 在页0显示 "SAFE"，在页2显示温度，在页4显示湿度
+    // In SAFE state, simultaneously display "SAFE" and temperature/humidity data,
+    // Display "SAFE" on page 0, temperature on page 2, humidity on page 4
     void displaySafeAndDHT(const std::string &tempStr, const std::string &humStr);
 
-    // 显示错误提示信息：例如“Wrong password, please try again.”
+    // Display error message: e.g., 'Wrong password, please try again.'
     void displayWrongPassword();
 
-    // 显示密码输入反馈（显示由 '*' 组成的字符串），例如在页6显示
+    // Display password input feedback (a string of '*'), e.g., on page 6
     void displayPasswordStars(const std::string &stars);
 
-
-
-    // 注册事件回调（选填，用于调试或联动）
+    // Register event callback (optional, for debugging or interaction)
     void registerEventCallback(std::function<void(const std::string&)> callback);
 
 private:
@@ -49,27 +47,27 @@ private:
     I2cDisplay(const I2cDisplay&) = delete;
     I2cDisplay& operator=(const I2cDisplay&) = delete;
 
-    // 发送单个命令到 SSD1306（控制字节 0x00）
+    // Send a single command to SSD1306 (control byte 0x00)
     void sendCommand(uint8_t cmd);
-    // 发送整个显示缓冲区到 SSD1306（控制字节 0x40）
+    // Send the entire display buffer to SSD1306 (control byte 0x40)
     void sendBuffer(const uint8_t* buf, size_t len);
 
-    // 清空本地显示缓冲区
+    // Clear local display buffer
     void clearBuffer();
 
-    // 辅助函数：计算字符串宽度（每字符 5 像素 + 1 像素间隔）
+    // Helper function: calculate text width (each character 5 pixels + 1 pixel spacing)
     int textWidth(const std::string &text);
     
-    // 辅助函数：在页0绘制单个字符（5×7 字体）
+    // Helper function: draw a single character on page 0 (5x7 font)
     void drawChar(int x, char c);
     
-    // 新增：在指定页绘制单个字符（page 取值 0～7，每页8像素）
+    // New: draw a single character on the specified page (page range 0-7, each page 8 pixels)
     void drawCharAt(int x, int page, char c);
 
 private:
-    int i2c_fd; // I2C 文件描述符
+    int i2c_fd; // I2C file descriptor
     std::function<void(const std::string&)> eventCallback;
-    uint8_t buffer[1024]; // 显示缓冲区：128 x 64 / 8 = 1024 字节
+    uint8_t buffer[1024]; // Display buffer: 128 x 64 / 8 = 1024 bytes
 };
 
 #endif // I2C_DISPLAY_H

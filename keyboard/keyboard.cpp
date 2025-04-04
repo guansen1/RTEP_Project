@@ -2,16 +2,10 @@
 #include "display/i2c_handle.h"
 using namespace std;
 
-// 根据实际硬件接线修改以下行和列对应的GPIO编号
-// 此处假设数据手册中：
-// COL 1-4 分别接到 GPIO 1,2,3,4；
-// ROW 1-4 分别接到 GPIO 5,6,7,8。
-// keyboard.cpp 中添加如下定义（加在文件顶部，紧接着 include 部分）
 const int ActiveKeyboardScanner::rowPins[4] = {13, 16, 20, 21};
 const int ActiveKeyboardScanner::colPins[4] = {1, 7, 8, 26};
 
-
-// 4×4 键盘按键映射表（示例映射，按数据手册或实际键盘修改）
+// 4x4 keyboard key mapping table
 const char ActiveKeyboardScanner::keyMap[4][4] = {
     {'1', '2', '3', 'A'},
     {'4', '5', '6', 'B'},
@@ -44,7 +38,7 @@ void ActiveKeyboardScanner::start() {
     struct itimerspec its;
     its.it_value.tv_sec = 0;  // first trigger time
     its.it_value.tv_nsec = 100000000;
-    its.it_interval.tv_sec = 0;  // period trigger time
+    its.it_interval.tv_sec = 0;  // periodic trigger time
     its.it_interval.tv_nsec = 100000000;
     
     if (timerfd_settime(timerfd, 0, &its, NULL) == -1) {
@@ -54,34 +48,36 @@ void ActiveKeyboardScanner::start() {
         return;
     }
     
-    // start worker thread
+    // Start worker thread
     scanThread = std::thread(&ActiveKeyboardScanner::scanLoop, this);
 }
 
 void ActiveKeyboardScanner::stop() {
     scanning = false;
-    // close time fd
+    // Close time fd
     if (timerfd != -1) {
         close(timerfd);
         timerfd = -1;
     }
-    if (scanThread.joinable()){
+    if (scanThread.joinable()) {
         scanThread.join();
     }
 }
-void ActiveKeyboardScanner::closescan(){
+
+void ActiveKeyboardScanner::closescan() {
     scanning = false;
 }
+
 void ActiveKeyboardScanner::timerEvent() {
     for (int col = 0; col < 4; col++) {
-        // 将当前列设置为低电平
+        // Set current column to low level
         gpio.writeGPIO(colPins[col], 0);
-        // 等待电平稳定（10毫秒）
+        // Wait for voltage stabilization (10 milliseconds)
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        // 检查所有行
+        // Check all rows
         for (int row = 0; row < 4; row++) {
             int value = gpio.readGPIO(rowPins[row]);
-            // 当按键按下时，由于按键将行与低电平的列短接，行电平会被拉低
+            // When the key is pressed, the key connects the row to the low-level column, pulling down the row voltage
             if (value == 0) {
                 char key = keyMap[row][col];
                 if (keyCallback) {
@@ -89,43 +85,43 @@ void ActiveKeyboardScanner::timerEvent() {
                 } else {
                     std::cout << "[ActiveKeyboard] Key pressed: " << key << std::endl;
                 }
-                // 等待按键释放（简化处理），避免连续检测
+                // Wait for the key to be released (simplified), avoid continuous detection
                 while (gpio.readGPIO(rowPins[row]) == 0 && scanning) {
                     std::this_thread::sleep_for(std::chrono::milliseconds(20));
                 }
             }
         }
-        // 将当前列恢复为高电平
+        // Restore current column to high level
         gpio.writeGPIO(colPins[col], 1);
-        // 列与列之间等待一段时间
+        // Wait between columns
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
+
 void ActiveKeyboardScanner::scanLoop() {
-    // 主扫描循环：依次将每个列驱动为低电平，再读取所有行状态
+    // Main scanning loop: drive each column to low level in turn, then read the state of all rows
     while (scanning) {
         if (timerfd == -1) {
             break;
         }
         
-        // block until trigger
+        // Block until trigger
         uint64_t exp;
         ssize_t s = read(timerfd, &exp, sizeof(uint64_t));
         if (s != sizeof(uint64_t)) {
             if (scanning) {
-                std::cerr << "fail to read timer: " << strerror(errno) << std::endl;
+                std::cerr << "Failed to read timer: " << strerror(errno) << std::endl;
             }
             continue;
         }
         
-        // trigger, excute callback
+        // Trigger, execute callback
         timerEvent();
     }
 }
+
 void ActiveKeyboardScanner::initkeyboard(I2cDisplayHandle& displayHandle) {
     setKeyCallback([&displayHandle](char key) {
-        displayHandle.handleKeyPress(key);  // 调用显示处理逻辑
+        displayHandle.handleKeyPress(key);  // Call display handling logic
     });
 }
-
-

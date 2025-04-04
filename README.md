@@ -113,9 +113,21 @@ sudo ./alarm_system
 ---
 
 ## Display Logic
-- 
-- 
-- 
+- The I2C OLED display in this project is used to visually present system states and sensor data in real time.
+- In normal state, the display shows the current temperature and humidity data from the DHT11 sensor. The temperature is displayed as "Temp: XX C", and the humidity as "Hum: XX %".
+- In ALARM state, triggered by the PIR sensor, it shows "INVASION" until the correct password is entered via the keypad or Telegram bot.
+- If the password is correct, the display returns to normal.If the password is incorrect, it shows "Wrong password, please try again" for 2 seconds, then returns to "INVASION".
+- The display operates in a separate thread for real-time updates without affecting system responsiveness.The OLED uses I2C communication, and updates are handled via asynchronous callbacks.
+- Characters are displayed using a 5x7 pixel font for clarity.
+
+---
+
+## Keyboard Logic
+- The 4x4 matrix keypad is used for password input to deactivate the alarm. The keyboard operates in an event-driven mode to ensure responsiveness.
+- The system continuously scans the row and column pins to detect key presses. When a key is pressed, the row is shorted to a low-level column, pulling the voltage down. This change is detected as a key press event.
+- The keyboard scanning process runs in a dedicated thread, allowing continuous monitoring without blocking the main program.
+- To debounce and accurately detect key presses, the system sets each column to low level one by one and checks all row states. After a key is detected, the system waits for the key to be released before accepting new inputs, avoiding repeated detections.
+- The keyboard input is tightly integrated with the I2cDisplayHandle, enabling real-time feedback on the OLED display.
 
 ---
 
@@ -149,3 +161,9 @@ sudo ./alarm_system
   - 1.Project overall underlying code construction;
   - 2.Codes for PIR sensor, buzzer and keyboard configeration support;
   - 3.Team work division arrangement;
+**Mingfei Chen**  
+- Student number: 2989374C
+- Contribution: 
+  - 1.Display module implementation, including OLED initialization and data rendering;
+  - 2.Integration of display updates with real-time data from sensors and alarm state changes;
+  - 3.Codes for display module implementation and keyboard interaction handling;

@@ -14,18 +14,18 @@ void I2cDisplayHandle::handleEvent(const gpiod_line_event &event) {
     if (event.event_type == GPIOD_LINE_EVENT_RISING_EDGE) {
         if (state == DisplayState ::SAFE){
         state = DisplayState::INVASION;
-        inputBuffer.clear();  // 清空密码输入
+        inputBuffer.clear();  // Clear password input
         I2cDisplay::getInstance().displayIntrusion();
         std::cout << "[I2cDisplayHandle] PIR rising: state switched to INVASION" << std::endl;
-        // 可选：在进入入侵状态时启动响铃
+        // Optional: Start alarm when entering invasion state
         //buzzer.startAlarm();
     }
     }
-    // PIR下降沿不处理，保持 INVASION 状态直到键盘解除
+    // No processing for PIR falling edge, maintain INVASION state until keypad unlocks
 }
 
 void I2cDisplayHandle::handleDHT(float temp, float humidity) {
-    // 更新最新温湿度数据
+    // Update latest temperature and humidity data
     lastTemp = temp;
     lastHumidity = humidity;
     if (state == DisplayState::SAFE) {
@@ -39,18 +39,18 @@ void I2cDisplayHandle::handleDHT(float temp, float humidity) {
 
 void I2cDisplayHandle::handleKeyPress(char key) {
     if (state == DisplayState::INVASION) {
-        // 仅处理数字键输入
+        // Process only numeric key input
         //if (key >= '0' && key <= '9') {
             inputBuffer.push_back(key);
             std::cout << "[I2cDisplayHandle] Password input: " << inputBuffer << std::endl;
-            // 当输入达到4位时验证密码
+            // Verify password when 4 digits are entered
             if (inputBuffer.size() == 4) {
                 if (inputBuffer == "1234") {
                     state = DisplayState::SAFE;
                     inputBuffer.clear();
-                    // 在解锁时关闭响铃
+                    // Disable alarm upon unlocking
                     buzzer.disable();
-                    // 使用最新 DHT 数据更新显示 SAFE 状态及温湿度数据
+                    // Update SAFE state and display temperature and humidity data using the latest DHT data
                     std::string tempStr = "Temp:" + std::to_string(lastTemp) + " C";
                     std::string humStr  = "Hum:"  + std::to_string(lastHumidity) + " %";
                     I2cDisplay::getInstance().displaySafeAndDHT(tempStr, humStr);
