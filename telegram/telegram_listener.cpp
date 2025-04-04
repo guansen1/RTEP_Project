@@ -6,7 +6,7 @@
 #include <chrono>
 #include "buzzer/buzzer.h"
 
-// 用于收集 libcurl 返回的数据
+// Used to collect data returned by libcurl
 static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) {
     size_t totalSize = size * nmemb;
     std::string* str = static_cast<std::string*>(userp);
@@ -24,13 +24,13 @@ TelegramListener::~TelegramListener() {
 void TelegramListener::sendTemperatureData(float temperature, float humidity) {
     if (detectionMode) {
         std::ostringstream oss;
-        oss << "当前温度: " << temperature << "°C, 湿度: " << humidity << "%";
+        oss << "temperature: " << temperature << "°C, humidity: " << humidity << "%";
         std::string message = oss.str();
         bool ret = sendTelegramMessage(token, chatId, message);
         if (!ret) {
-            std::cerr << "发送 Telegram 消息失败！" << std::endl;
+            std::cerr << "Failed to send Telegram message！" << std::endl;
         } else {
-            std::cout << "发送 Telegram 消息成功: " << message << std::endl;
+            std::cout << "Send Telegram message successfully: " << message << std::endl;
         }
     }
 }
@@ -60,7 +60,7 @@ void TelegramListener::run() {
     while (running) {
         CURL *curl = curl_easy_init();
         if (!curl) {
-            std::cerr << "无法初始化 curl" << std::endl;
+            std::cerr << "cannot initialize curl" << std::endl;
             std::this_thread::sleep_for(std::chrono::seconds(2));
             continue;
         }
@@ -81,31 +81,31 @@ void TelegramListener::run() {
 
         CURLcode res = curl_easy_perform(curl);
         if (res != CURLE_OK) {
-            std::cerr << "getUpdates 失败: " << curl_easy_strerror(res) << std::endl;
+            std::cerr << "getUpdates fail: " << curl_easy_strerror(res) << std::endl;
             curl_easy_cleanup(curl);
             std::this_thread::sleep_for(std::chrono::seconds(2));
             continue;
         }
         curl_easy_cleanup(curl);
 
-        // 处理 "start detection" 命令
+        // handle "start detection" 
         if (response.find("start detection") != std::string::npos) {
-            std::cout << "接收到 'start detection' 命令，开始发送数据" << std::endl;
+            std::cout << "receive 'start detection' ，begin sending data" << std::endl;
             detectionMode = true;
         } 
-        // 处理 "stop detection" 命令
+        // handle "stop detection" 
         else if (response.find("stop detection") != std::string::npos) {
-            std::cout << "接收到 'stop detection' 命令，停止发送数据" << std::endl;
+            std::cout << "receive 'stop detection' ，Stop sending data" << std::endl;
             detectionMode = false;
         } 
-        // 处理 "deactivate the alarm" 命令
+        // handle "deactivate the alarm" 
         else if (response.find("deactivate the alarm") != std::string::npos) {
-            std::cout << "接收到 'deactivate the alarm' 命令，停止蜂鸣器报警" << std::endl;
+            std::cout << "receive 'deactivate the alarm', stop the alarm" << std::endl;
             alarmEnabled = false;
-            buzzer.disable();  // 停止蜂鸣器
+            buzzer.disable();  // stop buzzer
         }
 
-        // 更新 last_update_id，防止重复处理消息
+        // update last_update_id，Prevent duplicate messages from being processed
         size_t pos = response.find("\"update_id\":");
         while (pos != std::string::npos) {
             size_t start = pos + std::string("\"update_id\":").length();
