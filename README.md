@@ -155,15 +155,17 @@ sudo ./alarm_system
 ---
 
 ## 👨 Team Contributions
+
 **Tengyu Jia**  
-- Student number: 2968439J
-- Contribution: 
-  - 1.Project overall underlying code construction;
-  - 2.Codes for PIR sensor, buzzer and keyboard configeration support;
-  - 3.Team work division arrangement;
+- Student number: 2968439J  
+- Contribution:  
+  - 1. Project overall underlying code construction;  
+  - 2. Codes for PIR sensor, buzzer and keyboard configuration support;  
+  - 3. Team work division arrangement;  
+
 **Mingfei Chen**  
-- Student number: 2989374C
-- Contribution: 
-  - 1.Display module implementation, including OLED initialization and data rendering;
-  - 2.Integration of display updates with real-time data from sensors and alarm state changes;
-  - 3.Codes for display module implementation and keyboard interaction handling;
+- Student number: 2989374C  
+- Contribution:  
+  - 1. Display module implementation, including OLED initialization and data rendering;  
+  - 2. Integration of display updates with real-time data from sensors and alarm state changes;  
+  - 3. Codes for display module implementation and keyboard interaction handling;  
