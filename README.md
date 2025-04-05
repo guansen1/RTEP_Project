@@ -1,4 +1,4 @@
-# Raspberry Pi Home Security System
+  # Raspberry Pi Home Security System
 
 ## 📊 Project Overview
 This project implements a **mini home security system** based on a **Raspberry Pi 5**, integrating multiple sensors and communication modules. The system monitors environmental conditions, detects movement, triggers alarms, and allows local and remote control.
@@ -168,4 +168,10 @@ sudo ./alarm_system
 - Contribution:  
   - 1. Display module implementation, including OLED initialization and data rendering;  
   - 2. Integration of display updates with real-time data from sensors and alarm state changes;  
-  - 3. Codes for display module implementation and keyboard interaction handling;  
+  - 3. Codes for display module implementation and keyboard interaction handling;
+
+**Guansen Tian**  
+- Student number: 3044525T  
+- Contribution:  
+  - 1. Implementation of the telegram part, which delivers messages to users via telegram;  
+  - 2. Support to implement keyboard module;  
