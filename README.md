@@ -149,9 +149,21 @@ sudo ./alarm_system
 ---
 
 
-## 🌟 Demo Screenshot
+## 🌟 Process Chart
 ![process chart](images/process_chart.png) 
+---
 
+## 🌟 Demo Pictures
+- **overall picture of project**
+![whole project](images/whole.jpg) 
+- **components of project**
+![part project](images/part.jpg) 
+- **normal status of display**
+![normal status](images/temp.jpg) 
+- **invasion status of display**
+![invasion status](images/invasion.jpg) 
+- **wrong password input**
+![wrong password](images/wrong.jpg) 
 ---
 
 ## 👨 Team Contributions
