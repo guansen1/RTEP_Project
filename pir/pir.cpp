@@ -9,31 +9,31 @@ PIREventHandler::~PIREventHandler() {
 }
 
 void PIREventHandler::start() {
-    // 无需启动线程，直接依赖 GPIO 的事件管理
+    // no need to start thread，rely on GPIO event management directly
 }
 
 void PIREventHandler::stop() {
-    // 无需停止线程
+    // no need to stop thread
 }
 
 void PIREventHandler::handleEvent(const gpiod_line_event& event) {
     if (event.event_type == GPIOD_LINE_EVENT_RISING_EDGE) {
-        std::cout << "[PIR] 运动检测触发！（上升沿）\n";
+        std::cout << "[PIR] movement detected！（rising edge）\n";
         
         std::string token = "7415933593:AAH3hw9NeuMsAOeuqyUZe_l935KP2mxaYGA";
-        std::string chatId = "7262701565";        // 替换为你的 ChatID
-        std::string message = "警报：检测到运动！";
+        std::string chatId = "7262701565";        
+        std::string message = "warning：movement detected！";
         
         //if (listener.isAlarmEnabled()) {
             buzzer.enable(1000);
         //} else {
-            //std::cout << "[PIR] 报警功能已禁用，蜂鸣器不会响。\n";
+            //std::cout << "[PIR] alarm function has been disabled, The buzzer stops working。\n";
         //
-        // 调用 sendTelegramMessage 发送消息
+        // call sendTelegramMessage 
         if (sendTelegramMessage(token, chatId, message)) {
-            std::cout << "Telegram 消息发送成功" << std::endl;
+            std::cout << "Telegram message sends successfully" << std::endl;
         } else {
-            std::cerr << "Telegram 消息发送失败" << std::endl;
+            std::cerr << "Telegram message sends failed" << std::endl;
         }
     } 
     
