@@ -3,6 +3,10 @@
 #include <iostream>
 #include <sstream>
 
+size_t discard_output(void *ptr, size_t size, size_t nmemb, void *userdata) {
+    return size * nmemb;
+}
+
 bool sendTelegramMessage(const std::string &token, const std::string &chat_id, const std::string &message) {
     CURL *curl = curl_easy_init();
     if (!curl) {
@@ -25,10 +29,11 @@ bool sendTelegramMessage(const std::string &token, const std::string &chat_id, c
 
     //  Releasing the encoded message
     curl_free(escapedMessage);
-
+    
     // Setting the curl parameter  
     curl_easy_setopt(curl, CURLOPT_URL, url.str().c_str());
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, discard_output);
 
     // Send HTTP request
     CURLcode res = curl_easy_perform(curl);
