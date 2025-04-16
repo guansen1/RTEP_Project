@@ -6,7 +6,6 @@ This project implements a **mini home security system** based on a **Raspberry P
 ![whole project](images/whole.jpg) 
 - **components of project**
 ![part project](images/part.jpg) 
-- **normal status of display**
 ---
 
 ## 🧠 Features
@@ -158,6 +157,7 @@ sudo ./alarm_system
 ---
 
 ## 🌟 Demo Pictures
+- **normal status of display**
 ![normal status](images/temp.jpg) 
 - **invasion status of display**
 ![invasion status](images/invasion.jpg) 
