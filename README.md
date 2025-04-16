@@ -2,7 +2,11 @@
 
 ## 📊 Project Overview
 This project implements a **mini home security system** based on a **Raspberry Pi 5**, integrating multiple sensors and communication modules. The system monitors environmental conditions, detects movement, triggers alarms, and allows local and remote control.
-
+- **overall picture of project**
+![whole project](images/whole.jpg) 
+- **components of project**
+![part project](images/part.jpg) 
+- **normal status of display**
 ---
 
 ## 🧠 Features
@@ -124,7 +128,7 @@ sudo ./alarm_system
 
 ## Keyboard Logic
 - The 4x4 matrix keypad is used for password input to deactivate the alarm. The keyboard operates in an event-driven mode to ensure responsiveness.
-- The system continuously scans the row and column pins to detect key presses. When a key is pressed, the row is shorted to a low-level column, pulling the voltage down. This change is detected as a key press event.
+- The system detect key presses using pseudo block of 10hz rate. When a key is pressed, the row is shorted to a low-level column, pulling the voltage down. This change is detected as a key press event.
 - The keyboard scanning process runs in a dedicated thread, allowing continuous monitoring without blocking the main program.
 - To debounce and accurately detect key presses, the system sets each column to low level one by one and checks all row states. After a key is detected, the system waits for the key to be released before accepting new inputs, avoiding repeated detections.
 - The keyboard input is tightly integrated with the I2cDisplayHandle, enabling real-time feedback on the OLED display.
@@ -149,9 +153,16 @@ sudo ./alarm_system
 ---
 
 
-## 🌟 Demo Screenshot
+## 🌟 Process Chart
 ![process chart](images/process_chart.png) 
+---
 
+## 🌟 Demo Pictures
+![normal status](images/temp.jpg) 
+- **invasion status of display**
+![invasion status](images/invasion.jpg) 
+- **wrong password input**
+![wrong password](images/wrong.jpg) 
 ---
 
 ## 👨 Team Contributions
