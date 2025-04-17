@@ -248,3 +248,9 @@ All tests ran in isolated environments using mocks to simulate hardware response
 - Contribution:  
   - 1. Implementation of the telegram part, which delivers messages to users via telegram;  
   - 2. Support to implement keyboard module;  
+
+**Bo Liu**  
+- Student number: 3016464L  
+- Contribution:  
+  - 1. Implementation of the temperature and humidity sensor section to detect the temperature and humidity of the environment;  
+  - 2. Test code for the unit test section and the actual test;  
