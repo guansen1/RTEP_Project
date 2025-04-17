@@ -162,7 +162,12 @@ sudo ./alarm_system
 - **invasion status of display**
 ![invasion status](images/invasion.jpg) 
 - **wrong password input**
-![wrong password](images/wrong.jpg) 
+![wrong password](images/wrong.jpg)
+- **When movement is detected**
+![movement](images/movement_detection.jpg)
+- **temperature and humidity detection**
+- **start and stop instruction**
+![temperature and humidity](images/hmdetection.jpg) 
 ---
 
 ## 👨 Team Contributions
