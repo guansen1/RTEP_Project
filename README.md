@@ -180,7 +180,7 @@ To ensure the robustness and correctness of each component in the Raspberry Pi h
 - **Result:** ✅ All 5 test cases passed successfully.
 
 ### 🌡️ DHT11 Sensor Module
-- **Purpose:** The DHT11 sensor captures temperature and humidity data every 2 seconds for environmental monitoring and display.
+- **Purpose:** The DHT11 sensor captures temperature and humidity data for environmental monitoring and display.
 - **Tests Conducted:**
   - Tests proper initialization and callback function registration.
   - Simulates normal data reading and two error cases (checksum failure and no response).
