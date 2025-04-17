@@ -1,0 +1,40 @@
+[==========] Running 5 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 5 tests from BuzzerTest
+[ RUN      ] BuzzerTest.EnableCallsPWMWithCorrectParameters
+
+GMOCK WARNING:
+Uninteresting mock function call - returning directly.
+    Function call: MockStop()
+NOTE: You can safely ignore the above warning unless this call should not happen.  Do not suppress it by blindly adding an EXPECT_CALL() if you don't mean to enforce the call.  See https://github.com/google/googletest/blob/master/docs/gmock_cook_book.md#knowing-when-to-expect for details.
+[       OK ] BuzzerTest.EnableCallsPWMWithCorrectParameters (0 ms)
+[ RUN      ] BuzzerTest.EnableSupportsVariousFrequencies
+
+GMOCK WARNING:
+Uninteresting mock function call - returning directly.
+    Function call: MockStop()
+NOTE: You can safely ignore the above warning unless this call should not happen.  Do not suppress it by blindly adding an EXPECT_CALL() if you don't mean to enforce the call.  See https://github.com/google/googletest/blob/master/docs/gmock_cook_book.md#knowing-when-to-expect for details.
+[       OK ] BuzzerTest.EnableSupportsVariousFrequencies (0 ms)
+[ RUN      ] BuzzerTest.DisableCallsStopMethod
+[       OK ] BuzzerTest.DisableCallsStopMethod (0 ms)
+[ RUN      ] BuzzerTest.DestructorCallsDisable
+[       OK ] BuzzerTest.DestructorCallsDisable (0 ms)
+[ RUN      ] BuzzerTest.HandlesFailureInPWMStart
+
+GMOCK WARNING:
+Uninteresting mock function call - returning default value.
+    Function call: MockSetDutyCycle(50)
+          Returns: 0
+NOTE: You can safely ignore the above warning unless this call should not happen.  Do not suppress it by blindly adding an EXPECT_CALL() if you don't mean to enforce the call.  See https://github.com/google/googletest/blob/master/docs/gmock_cook_book.md#knowing-when-to-expect for details.
+
+GMOCK WARNING:
+Uninteresting mock function call - returning directly.
+    Function call: MockStop()
+NOTE: You can safely ignore the above warning unless this call should not happen.  Do not suppress it by blindly adding an EXPECT_CALL() if you don't mean to enforce the call.  See https://github.com/google/googletest/blob/master/docs/gmock_cook_book.md#knowing-when-to-expect for details.
+[       OK ] BuzzerTest.HandlesFailureInPWMStart (0 ms)
+[----------] 5 tests from BuzzerTest (0 ms total)
+
+
+[----------] Global test environment tear-down
+[==========] 5 tests from 1 test suite ran. (0 ms total)
+[  PASSED  ] 5 tests.

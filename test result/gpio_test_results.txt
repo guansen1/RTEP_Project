@@ -1,0 +1,22 @@
+[==========] Running 7 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 7 tests from GPIOTest
+[ RUN      ] GPIOTest.TestInitialization
+[       OK ] GPIOTest.TestInitialization (0 ms)
+[ RUN      ] GPIOTest.TestConfigGPIO
+[       OK ] GPIOTest.TestConfigGPIO (0 ms)
+[ RUN      ] GPIOTest.TestReadGPIO
+[       OK ] GPIOTest.TestReadGPIO (0 ms)
+[ RUN      ] GPIOTest.TestWriteGPIO
+[       OK ] GPIOTest.TestWriteGPIO (0 ms)
+[ RUN      ] GPIOTest.TestRegisterCallback
+[       OK ] GPIOTest.TestRegisterCallback (0 ms)
+[ RUN      ] GPIOTest.TestStartStop
+[       OK ] GPIOTest.TestStartStop (0 ms)
+[ RUN      ] GPIOTest.TestEdgeTrigger
+[       OK ] GPIOTest.TestEdgeTrigger (0 ms)
+[----------] 7 tests from GPIOTest (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 7 tests from 1 test suite ran. (1 ms total)
+[  PASSED  ] 7 tests.

@@ -7,7 +7,7 @@
 #include <iostream>
 #include <string>
 
-// 创建一个 GPIO 的 Mock 类
+// Mock class for GPIO interface
 class MockGPIO : public GPIO {
 public:
     MOCK_METHOD(void, gpio_init, (), (override));
@@ -19,111 +19,83 @@ public:
     MOCK_METHOD(void, stop, (), (override));
 };
 
-// 测试夹具
+// Test fixture for PIR tests
 class PIRTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        // 设置测试环境
+        // Setup test environment
     }
 
     void TearDown() override {
-        // 清理测试环境
+        // Clean up test environment
     }
 
     MockGPIO mockGpio;
 };
 
-// 测试PIR初始化
+// Test PIR initialization
 TEST_F(PIRTest, Initialization) {
-    // 创建PIR事件处理器
+    // Create PIR event handler
     PIREventHandler pirHandler(mockGpio);
     
-    // 验证构造函数不会崩溃
+    // Verify constructor doesn't crash
     SUCCEED();
 }
 
-// 测试PIR处理上升沿事件
+// Test PIR handling of rising edge events
 TEST_F(PIRTest, HandleRisingEdgeEvent) {
-    // 创建PIR事件处理器
     PIREventHandler pirHandler(mockGpio);
     
-    // 创建上升沿事件
     gpiod_line_event event;
     event.event_type = GPIOD_LINE_EVENT_RISING_EDGE;
     
-    // 捕获标准输出
     testing::internal::CaptureStdout();
-    
-    // 处理事件
     pirHandler.handleEvent(event);
     
-    // 获取输出并验证
     std::string output = testing::internal::GetCapturedStdout();
     EXPECT_THAT(output, testing::HasSubstr("[PIR] Triggered"));
 }
 
-// 测试PIR处理下降沿事件
+// Test PIR handling of falling edge events
 TEST_F(PIRTest, HandleFallingEdgeEvent) {
-    // 创建PIR事件处理器
     PIREventHandler pirHandler(mockGpio);
     
-    // 创建下降沿事件
     gpiod_line_event event;
     event.event_type = GPIOD_LINE_EVENT_FALLING_EDGE;
     
-    // 捕获标准输出
     testing::internal::CaptureStdout();
-    
-    // 处理事件
     pirHandler.handleEvent(event);
     
-    // 获取输出并验证
     std::string output = testing::internal::GetCapturedStdout();
     EXPECT_THAT(output, testing::HasSubstr("[PIR] Trigger gone"));
 }
 
-// 测试PIR注册回调
+// Test callback registration
 TEST_F(PIRTest, RegisterCallback) {
-    // 期望registerCallback方法被调用，并且传入的参数是PIR_IO和任意回调对象
+    // Expect callback registration with correct parameters
     EXPECT_CALL(mockGpio, registerCallback(PIR_IO, testing::_))
         .Times(1);
     
-    // 创建PIR事件处理器
     PIREventHandler pirHandler(mockGpio);
-    
-    // 手动注册回调
     mockGpio.registerCallback(PIR_IO, &pirHandler);
 }
 
-// 如果启用了实际硬件测试，添加一个与实际硬件交互的测试
+// Hardware integration test (enabled conditionally)
 #ifdef HARDWARE_TEST_ENABLED
 TEST(PIRHardwareTest, TestWithRealHardware) {
-    // 创建实际的GPIO对象
     GPIO gpio;
-    
-    // 初始化GPIO
     gpio.gpio_init();
     
-    // 创建PIR事件处理器
     PIREventHandler pirHandler(gpio);
-    
-    // 注册回调
     gpio.registerCallback(PIR_IO, &pirHandler);
-    
-    // 启动GPIO事件监听
     gpio.start();
     
-    std::cout << "PIR硬件测试：请在10秒内触发PIR传感器..." << std::endl;
-    
-    // 等待10秒，给用户时间触发传感器
+    std::cout << "PIR hardware test: Please trigger sensor within 10 seconds..." << std::endl;
     std::this_thread::sleep_for(std::chrono::seconds(10));
     
-    // 停止GPIO事件监听
     gpio.stop();
+    std::cout << "PIR hardware test completed." << std::endl;
     
-    std::cout << "PIR硬件测试结束。" << std::endl;
-    
-    // 这个测试主要是提供一个与实际硬件交互的机会，所以不做断言
     SUCCEED();
 }
 #endif

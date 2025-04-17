@@ -10,12 +10,12 @@
 #define BUZZER_PWM_CHANNEL 2
 class Buzzer {
     public:
-        Buzzer(RPI_PWM pwm);
+        Buzzer(RPI_PWM& pwm);
         ~Buzzer();
         void enable(int freq);
         void disable();
     private:
-        RPI_PWM pwm;
+        RPI_PWM& pwm;
 };
 
 #endif // BUZZER_H

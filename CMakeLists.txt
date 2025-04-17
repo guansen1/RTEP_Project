@@ -37,7 +37,9 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/dht
     ${CMAKE_SOURCE_DIR}/gpio  
     ${CMAKE_SOURCE_DIR}/pir
+    ${CMAKE_SOURCE_DIR}/buzzer
     ${CMAKE_SOURCE_DIR}/display
+    ${CMAKE_SOURCE_DIR}/keyboard
 )
 
 # 添加库文件
@@ -56,7 +58,7 @@ add_library(display_lib
 )
 target_link_libraries(display_lib ${I2C_LIB})
 
-add_library(buzzer_lib buzzer.cpp)
+add_library(buzzer_lib buzzer/buzzer.cpp)
 target_link_libraries(buzzer_lib gpio_lib)
 
 # 添加主可执行文件
@@ -66,6 +68,8 @@ target_link_libraries(alarm_system
     dht_lib
     pir_lib
     display_lib
+    buzzer_lib
+    keyboard_lib
 )
 
 # 测试配置

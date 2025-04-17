@@ -11,37 +11,32 @@ public:
     static I2cDisplay& getInstance();
 
     // 初始化 SSD1306（打开 I2C 总线并发送初始化命令）
-    void init();
+    virtual void init();
 
     // 单行显示文本（默认在页0，居中显示）
-    void displayText(const std::string &text);
+    virtual void displayText(const std::string &text);
 
     // 在指定页绘制文本，自动水平居中
-    void displayTextAt(int page, const std::string &text);
+    virtual void displayTextAt(int page, const std::string &text);
 
     // 显示两行文本（例如温湿度数据），分别绘制在指定页（例如页2和页4）
-    void displayMultiLine(const std::string &line1, const std::string &line2);
+    virtual void displayMultiLine(const std::string &line1, const std::string &line2);
 
     // 显示 "INVASION"（居中显示，覆盖整个屏幕）
-    void displayIntrusion();
+    virtual void displayIntrusion();
 
     // 显示 "SAFE"（仅显示 SAFE，不更新温湿度数据）
-    void displaySafe();
+    virtual void displaySafe();
 
     // 在 SAFE 状态下同时显示 "SAFE" 与温湿度数据，
     // 在页0显示 "SAFE"，在页2显示温度，在页4显示湿度
-    void displaySafeAndDHT(const std::string &tempStr, const std::string &humStr);
+    virtual void displaySafeAndDHT(const std::string &tempStr, const std::string &humStr);
 
     // 注册事件回调（选填，用于调试或联动）
-    void registerEventCallback(std::function<void(const std::string&)> callback);
-
-private:
-    I2cDisplay();
-    ~I2cDisplay();
-    I2cDisplay(const I2cDisplay&) = delete;
-    I2cDisplay& operator=(const I2cDisplay&) = delete;
-
-    // 发送单个命令到 SSD1306（控制字节 0x00）
+    virtual void registerEventCallback(std::function<void(const std::string&)> callback);
+    virtual ~I2cDisplay();
+protected:
+// 发送单个命令到 SSD1306（控制字节 0x00）
     void sendCommand(uint8_t cmd);
     // 发送整个显示缓冲区到 SSD1306（控制字节 0x40）
     void sendBuffer(const uint8_t* buf, size_t len);
@@ -59,6 +54,10 @@ private:
     void drawCharAt(int x, int page, char c);
 
 private:
+    I2cDisplay();
+    I2cDisplay(const I2cDisplay&) = delete;
+    I2cDisplay& operator=(const I2cDisplay&) = delete;
+
     int i2c_fd; // I2C 文件描述符
     std::function<void(const std::string&)> eventCallback;
     uint8_t buffer[1024]; // 显示缓冲区：128 x 64 / 8 = 1024 字节

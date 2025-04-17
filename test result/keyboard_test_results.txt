@@ -1,0 +1,18 @@
+[==========] Running 5 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 5 tests from KeyboardUnitTest
+[ RUN      ] KeyboardUnitTest.Initialization
+[       OK ] KeyboardUnitTest.Initialization (0 ms)
+[ RUN      ] KeyboardUnitTest.StartAndStop
+[       OK ] KeyboardUnitTest.StartAndStop (180 ms)
+[ RUN      ] KeyboardUnitTest.KeyDetection
+[       OK ] KeyboardUnitTest.KeyDetection (200 ms)
+[ RUN      ] KeyboardUnitTest.KeySequence
+[       OK ] KeyboardUnitTest.KeySequence (301 ms)
+[ RUN      ] KeyboardUnitTest.CallbackFunction
+[       OK ] KeyboardUnitTest.CallbackFunction (642 ms)
+[----------] 5 tests from KeyboardUnitTest (1325 ms total)
+
+[----------] Global test environment tear-down
+[==========] 5 tests from 1 test suite ran. (1325 ms total)
+[  PASSED  ] 5 tests.

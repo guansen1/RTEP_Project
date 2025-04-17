@@ -23,7 +23,7 @@ public:
      * \param chip The chip number (for RPI5 it's 2)
      * \param return >0 on success and -1 if an error has happened.
      **/
-    int start(int channel, int frequency, float duty_cycle = 0, int chip = 0) {
+    virtual int start(int channel, int frequency, float duty_cycle = 0, int chip = 0) {
 	chippath = "/sys/class/pwm/pwmchip" + std::to_string(chip);
 	pwmpath = chippath + "/pwm" + std::to_string(channel);
 	std::string p = chippath+"/export";
@@ -46,11 +46,11 @@ public:
     /**
      * Stops the PWM
      **/
-    void stop() {
+    virtual void stop() {
 	disable();
     }
     
-    ~RPI_PWM() {
+    virtual ~RPI_PWM() {
 	disable();
     }
 
@@ -59,7 +59,7 @@ public:
      * \param v The duty cycle in percent.
      * \param return >0 on success and -1 after an error.
      **/
-    inline int setDutyCycle(float v) const {
+    virtual int setDutyCycle(float v) const {
 	const int dc = (int)round((float)per * (v / 100.0));
 	const int r = setDutyCycleNS(dc);
 	return r;

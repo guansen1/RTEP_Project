@@ -7,6 +7,7 @@ GPIO::GPIO() : chip(nullptr), running(false) {
         std::cerr << "cant open GPIO controller" << std::endl;
         exit(1);
     }
+    gpio_init();
 }
 
 GPIO::~GPIO() {

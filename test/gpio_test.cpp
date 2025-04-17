@@ -2,12 +2,12 @@
 #include <gmock/gmock.h>
 #include "gpio/gpio.h"
 
-// 创建用于测试的模拟GPIO类
+// Mock GPIO class for testing
 class MockGPIO : public GPIO {
 public:
-    // 使用构造函数覆盖父类构造函数，避免真实硬件访问
+    // Override parent constructor to avoid real hardware access
     MockGPIO() {
-        // 注意：这不会调用父类构造函数
+        // Note: This does not call the parent constructor
     }
 
     MOCK_METHOD(void, gpio_init, (), (override));
@@ -19,27 +19,34 @@ public:
     MOCK_METHOD(void, stop, (), (override));
 };
 
-// 测试回调类
+// Test callback class
 class TestCallback : public GPIO::GPIOEventCallbackInterface {
 public:
     MOCK_METHOD(void, handleEvent, (const gpiod_line_event& event), (override));
 };
 
-// 测试GPIO初始化
+// Test GPIO initialization
 TEST(GPIOTest, TestInitialization) {
 #ifdef HARDWARE_TEST_ENABLED
-    // 使用真实GPIO测试，需要硬件支持
     GPIO gpio;
     gpio.gpio_init();
     
-    // 验证初始化后的状态
+    // Verify state after initialization
     EXPECT_TRUE(gpio.readGPIO(PIR_IO) >= 0);
     EXPECT_TRUE(gpio.writeGPIO(BUZZER_IO, 0));
     EXPECT_TRUE(gpio.writeGPIO(DHT_IO, 0));
 #else
-    // 使用Mock测试，不需要硬件
+    // Using Mock for testing, no hardware required
     MockGPIO gpio;
     
+    // Add this expectation, define gpio_init behavior
+    EXPECT_CALL(gpio, gpio_init()).WillOnce(testing::Invoke([&gpio]() {
+        gpio.configGPIO(PIR_IO, BOTH_EDGES);
+        gpio.configGPIO(BUZZER_IO, OUTPUT);
+        gpio.configGPIO(DHT_IO, OUTPUT);
+    }));
+    
+    // Set expectations for configGPIO calls
     EXPECT_CALL(gpio, configGPIO(PIR_IO, BOTH_EDGES)).WillOnce(testing::Return(true));
     EXPECT_CALL(gpio, configGPIO(BUZZER_IO, OUTPUT)).WillOnce(testing::Return(true));
     EXPECT_CALL(gpio, configGPIO(DHT_IO, OUTPUT)).WillOnce(testing::Return(true));
@@ -48,7 +55,7 @@ TEST(GPIOTest, TestInitialization) {
 #endif
 }
 
-// 测试GPIO配置
+// Test GPIO configuration
 TEST(GPIOTest, TestConfigGPIO) {
 #ifdef HARDWARE_TEST_ENABLED
     GPIO gpio;
@@ -56,7 +63,6 @@ TEST(GPIOTest, TestConfigGPIO) {
     EXPECT_TRUE(gpio.configGPIO(PIR_IO, INPUT));
     EXPECT_TRUE(gpio.configGPIO(BUZZER_IO, OUTPUT));
     
-    // 测试无效配置
     EXPECT_FALSE(gpio.configGPIO(PIR_IO, 99));
 #else
     MockGPIO gpio;
@@ -71,16 +77,16 @@ TEST(GPIOTest, TestConfigGPIO) {
 #endif
 }
 
-// 测试GPIO读操作
+// Test GPIO read operation
 TEST(GPIOTest, TestReadGPIO) {
 #ifdef HARDWARE_TEST_ENABLED
     GPIO gpio;
     gpio.configGPIO(PIR_IO, INPUT);
     
-    // 读取输入引脚，无法预测具体值，但应该是合法的
+    // Read input pin, cannot predict specific value, but should be valid
     EXPECT_GE(gpio.readGPIO(PIR_IO), 0);
     
-    // 测试读取不存在的引脚
+    // Test reading non-existent pin
     EXPECT_EQ(gpio.readGPIO(100), -1);
 #else
     MockGPIO gpio;
@@ -93,17 +99,17 @@ TEST(GPIOTest, TestReadGPIO) {
 #endif
 }
 
-// 测试GPIO写操作
+// Test GPIO write operation
 TEST(GPIOTest, TestWriteGPIO) {
 #ifdef HARDWARE_TEST_ENABLED
     GPIO gpio;
     gpio.configGPIO(BUZZER_IO, OUTPUT);
     
-    // 测试输出高低电平
+    // Test output high and low levels
     EXPECT_TRUE(gpio.writeGPIO(BUZZER_IO, 1));
     EXPECT_TRUE(gpio.writeGPIO(BUZZER_IO, 0));
     
-    // 测试写入无效引脚
+    // Test writing to invalid pin
     EXPECT_FALSE(gpio.writeGPIO(100, 1));
 #else
     MockGPIO gpio;
@@ -118,17 +124,15 @@ TEST(GPIOTest, TestWriteGPIO) {
 #endif
 }
 
-// 测试回调注册
+// Test callback registration
 TEST(GPIOTest, TestRegisterCallback) {
 #ifdef HARDWARE_TEST_ENABLED
-    // 硬件测试中，只是简单验证不会崩溃
     GPIO gpio;
     TestCallback callback;
     
     gpio.configGPIO(PIR_IO, BOTH_EDGES);
     gpio.registerCallback(PIR_IO, &callback);
     
-    // 启动短时间，验证不会崩溃
     gpio.start();
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     gpio.stop();
@@ -142,12 +146,12 @@ TEST(GPIOTest, TestRegisterCallback) {
 #endif
 }
 
-// 测试启动和停止
+// Test start and stop
 TEST(GPIOTest, TestStartStop) {
 #ifdef HARDWARE_TEST_ENABLED
     GPIO gpio;
     
-    // 简单验证启动停止不会崩溃
+    // Simply verify start/stop doesn't crash
     gpio.start();
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     gpio.stop();
@@ -162,25 +166,24 @@ TEST(GPIOTest, TestStartStop) {
 #endif
 }
 
-// 测试边缘触发
+// Test edge trigger
 TEST(GPIOTest, TestEdgeTrigger) {
 #ifndef HARDWARE_TEST_ENABLED
-    // 这个测试只在非硬件模式下运行
     MockGPIO gpio;
     TestCallback callback;
     
-    // 设置回调期望
+    // Set callback expectations
     EXPECT_CALL(gpio, configGPIO(PIR_IO, BOTH_EDGES)).WillOnce(testing::Return(true));
     EXPECT_CALL(gpio, registerCallback(PIR_IO, &callback));
-    EXPECT_CALL(callback, handleEvent(testing::_)).Times(0);  // 不期望在这个测试中被调用
+    EXPECT_CALL(callback, handleEvent(testing::_)).Times(0);  // Not expected to be called in this test
     
-    // 配置GPIO
+    // Configure GPIO
     EXPECT_TRUE(gpio.configGPIO(PIR_IO, BOTH_EDGES));
     gpio.registerCallback(PIR_IO, &callback);
 #endif
 }
 
-// 主函数
+// Main function
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

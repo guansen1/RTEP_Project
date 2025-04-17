@@ -1,6 +1,6 @@
 #include "buzzer.h"
 
-Buzzer::Buzzer(RPI_PWM pwm):pwm(pwm){
+Buzzer::Buzzer(RPI_PWM& pwm):pwm(pwm){
 
 }
 
