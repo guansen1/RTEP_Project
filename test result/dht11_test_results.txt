@@ -1,0 +1,20 @@
+[==========] Running 6 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 6 tests from DHT11Test
+[ RUN      ] DHT11Test.Initialization
+[       OK ] DHT11Test.Initialization (0 ms)
+[ RUN      ] DHT11Test.CallbackRegistration
+[       OK ] DHT11Test.CallbackRegistration (0 ms)
+[ RUN      ] DHT11Test.ReadDataSuccess
+[       OK ] DHT11Test.ReadDataSuccess (0 ms)
+[ RUN      ] DHT11Test.ReadDataChecksumError
+[       OK ] DHT11Test.ReadDataChecksumError (0 ms)
+[ RUN      ] DHT11Test.ReadDataNoResponse
+[       OK ] DHT11Test.ReadDataNoResponse (0 ms)
+[ RUN      ] DHT11Test.DataSmoothing
+[       OK ] DHT11Test.DataSmoothing (0 ms)
+[----------] 6 tests from DHT11Test (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 6 tests from 1 test suite ran. (1 ms total)
+[  PASSED  ] 6 tests.

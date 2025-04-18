@@ -20,6 +20,10 @@ This project implements a **mini home security system** based on a **Raspberry P
 - **DHT11 Temperature & Humidity Sensor:** Continuously measures and updates readings every 2 seconds.
 
 ---
+## 🌟 Process Chart
+![process chart](images/process_chart.png) 
+---
+
 ## Other info
 - **branch**:
   - **main**: our release branch, also for code review;
@@ -39,6 +43,8 @@ Raspberry Pi 5
 |-- 4x4 Matrix Keypad (Password Input)
 |-- Telegram Bot (Remote Notification & Control)
 |-- DHT11 Sensor (Temp & Humidity Monitoring)
+|-- TEST (Uni_test Code)
+|-- TEST Result (Uni_test Result)
 ```
 
 ---
@@ -54,6 +60,20 @@ Raspberry Pi 5
   - The system stops the alarm
   - OLED resumes normal temperature/humidity display
 
+---
+
+## 🌟 Demo Pictures
+- **normal status of display**
+![normal status](images/temp.jpg) 
+- **invasion status of display**
+![invasion status](images/invasion.jpg) 
+- **wrong password input**
+![wrong password](images/wrong.jpg)
+- **When movement is detected**
+![movement](images/movement_detection.jpg)
+- **temperature and humidity detection**
+- **start and stop instruction**
+![temperature and humidity](images/hmdetection.jpg) 
 ---
 
 ## 🛠️ Technical Details
@@ -151,23 +171,65 @@ sudo ./alarm_system
 
 ---
 
+## 🧪 Unit Testing
 
-## 🌟 Process Chart
-![process chart](images/process_chart.png) 
----
+To ensure the robustness and correctness of each component in the Raspberry Pi home security system, we conducted extensive unit testing on all key hardware-interfacing modules. The tests were implemented using the GoogleTest and GMock frameworks, simulating hardware behaviors and verifying logic correctness through isolated scenarios.
 
-## 🌟 Demo Pictures
-- **normal status of display**
-![normal status](images/temp.jpg) 
-- **invasion status of display**
-![invasion status](images/invasion.jpg) 
-- **wrong password input**
-![wrong password](images/wrong.jpg)
-- **When movement is detected**
-![movement](images/movement_detection.jpg)
-- **temperature and humidity detection**
-- **start and stop instruction**
-![temperature and humidity](images/hmdetection.jpg) 
+### 🔔 Buzzer Module
+- **Purpose:** The buzzer provides audible alerts when an intrusion is detected. It uses hardware PWM for precise control of frequency and duty cycle.
+- **Tests Conducted:**
+  - Verifies that enabling the buzzer correctly calls PWM initialization with target frequency and duty cycle.
+  - Ensures that disabling the buzzer stops the sound and releases resources.
+  - Tests destructor behavior to avoid dangling state.
+  - Simulates PWM startup failure to test system stability.
+- **Result:** ✅ All 5 test cases passed successfully.
+
+### 🌡️ DHT11 Sensor Module
+- **Purpose:** The DHT11 sensor captures temperature and humidity data for environmental monitoring and display.
+- **Tests Conducted:**
+  - Tests proper initialization and callback function registration.
+  - Simulates normal data reading and two error cases (checksum failure and no response).
+  - Verifies smoothing algorithm to eliminate data noise.
+- **Result:** ✅ All 6 test cases passed successfully.
+
+### ⚡ GPIO Handling
+- **Purpose:** The GPIO interface underpins nearly all hardware interactions, including PIR, buzzer, keypad, and DHT11.
+- **Tests Conducted:**
+  - Verifies GPIO initialization and configuration for input/output modes.
+  - Tests reading/writing logic.
+  - Checks event registration and proper triggering of callbacks (e.g., rising/falling edges).
+  - Ensures GPIO threads can start and stop cleanly.
+- **Result:** ✅ All 7 test cases passed successfully.
+
+### 🖥️ I2C OLED Display
+- **Purpose:** The OLED displays real-time sensor data and system state (normal, alarm, error).
+- **Tests Conducted:**
+  - Ensures singleton pattern to avoid multiple display instances.
+  - Validates text width calculations for consistent formatting.
+  - Tests text rendering logic, multi-line display handling, and alarm/normal mode transitions.
+  - Confirms safe rendering of DHT data and state updates without race conditions.
+- **Result:** ✅ All 7 test cases passed successfully.
+
+### ⌨️ Keyboard Input (4x4 Matrix Keypad)
+- **Purpose:** The keypad accepts a password to deactivate the alarm system. It operates non-blocking for smooth user input.
+- **Tests Conducted:**
+  - Tests initialization and start/stop of the scanning thread.
+  - Simulates various key press patterns and ensures accurate detection.
+  - Verifies the correct order of multiple key inputs.
+  - Confirms callback registration and invocation.
+- **Result:** ✅ All 5 test cases passed successfully.
+
+### 🕵️ PIR Motion Detection Sensor
+- **Purpose:** The PIR sensor detects human motion to trigger the alarm system.
+- **Tests Conducted:**
+  - Validates GPIO initialization for motion input.
+  - Simulates rising and falling edge triggers.
+  - Ensures that registered callbacks are executed correctly upon detection.
+- **Result:** ✅ All 4 test cases passed successfully.
+
+All tests ran in isolated environments using mocks to simulate hardware response. This ensures each module functions reliably on its own, improving overall system stability and maintainability.
+
+
 ---
 
 ## 👨 Team Contributions
@@ -191,3 +253,9 @@ sudo ./alarm_system
 - Contribution:  
   - 1. Implementation of the telegram part, which delivers messages to users via telegram;  
   - 2. Support to implement keyboard module;  
+
+**Bo Liu**  
+- Student number: 3016464L  
+- Contribution:  
+  - 1. Implementation of the temperature and humidity sensor section to detect the temperature and humidity of the environment;  
+  - 2. Test code for the unit test section and the actual test;  

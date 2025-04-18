@@ -1,0 +1,23 @@
+[==========] Running 7 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 7 tests from I2cDisplayTest
+[ RUN      ] I2cDisplayTest.SingletonTest
+[       OK ] I2cDisplayTest.SingletonTest (0 ms)
+[ RUN      ] I2cDisplayTest.TextWidthCalculation
+[       OK ] I2cDisplayTest.TextWidthCalculation (0 ms)
+[ RUN      ] I2cDisplayTest.CallbackRegistration
+[       OK ] I2cDisplayTest.CallbackRegistration (0 ms)
+[ RUN      ] I2cDisplayTest.DisplayTextFunctionality
+[       OK ] I2cDisplayTest.DisplayTextFunctionality (0 ms)
+[ RUN      ] I2cDisplayTest.MultiLineDisplay
+[       OK ] I2cDisplayTest.MultiLineDisplay (0 ms)
+[ RUN      ] I2cDisplayTest.SystemStateDisplay
+[       OK ] I2cDisplayTest.SystemStateDisplay (0 ms)
+[ RUN      ] I2cDisplayTest.SafeWithDHTDisplay
+[       OK ] I2cDisplayTest.SafeWithDHTDisplay (0 ms)
+[----------] 7 tests from I2cDisplayTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 7 tests from 1 test suite ran. (0 ms total)
+[  PASSED  ] 7 tests.
+
