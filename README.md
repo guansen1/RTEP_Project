@@ -2,6 +2,8 @@
 
 ## 📊 Project Overview
 This project implements a **mini home security system** based on a **Raspberry Pi 5**, integrating multiple sensors and communication modules. The system monitors environmental conditions, detects movement, triggers alarms, and allows local and remote control.
+- **our social media account**
+https://www.instagram.com/uklo.ve123?igsh=MXBtYmpwZTkxcHI1aQ==
 - **overall picture of project**
 ![whole project](images/whole.jpg) 
 - **components of project**
@@ -63,16 +65,15 @@ Raspberry Pi 5
 ---
 
 ## 🌟 Demo Pictures
-- **normal status of display**
+- **Normal status of display, temperature and humidity info**
 ![normal status](images/temp.jpg) 
-- **invasion status of display**
+- **Invasion status of display, warning info**
 ![invasion status](images/invasion.jpg) 
-- **wrong password input**
+- **Wrong password input and feedback**
 ![wrong password](images/wrong.jpg)
-- **When movement is detected**
+- **When movement is detected, send message by telegram**
 ![movement](images/movement_detection.jpg)
-- **temperature and humidity detection**
-- **start and stop instruction**
+- **Temperature and humidity data query using start and stop instruction**
 ![temperature and humidity](images/hmdetection.jpg) 
 ---
 
